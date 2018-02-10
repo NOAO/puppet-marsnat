@@ -1,8 +1,7 @@
-class mars::install (
-  $marsvhost = hiera('mars_vhost', 'www.mars.noao.edu'),
-  $marsversion = hiera('marsversion', 'master'),
+class marsnat::install (
+  $naticaversion = hiera('naticaversion', 'master'),
   ) {
-  notify{"Loading mars::install.pp; marsversion=${marsversion}":}
+  notify{"Loading marsnat::install.pp; naticaversion=${naticaversion}":}
 
   ensure_resource('package', ['git', ], {'ensure' => 'present'})
   include augeas
@@ -18,38 +17,16 @@ class mars::install (
     ensure  => 'present',
     replace => true,
     content => "---
-marsvhost: ${marsvhost}
-marsversion: ${marsversion}
+naticaversion: ${naticaversion}
 ",
     group   => 'root',
     mode    => '0774',
   }
   
-  
-#!  class { 'apache': } ->
-#!  apache::vhost { "${marsvhost}":
-#!    port     => '80',
-#!    #!priority => '15',
-#!    docroot  => '/var/www/mars',
-#!  }
-
-  file { '/etc/mars/django_local_settings.py':
+  file { '/etc/mars/natica_local_settings.py':
     replace => true,
-    source  => hiera('localdjango'),
+    source  => hiera('localnatica'),
   } 
-  file { '/etc/mars/django_local_settings_test.py':
-    replace => true,
-    source  => hiera('localdjangotest', 'puppet:///modules/dmo-hiera/django_settings_local_pat.py'),
-  } 
-  file { '/etc/nginx/ngnix.conf':
-    replace => false,
-    source  => hiera('nginx_conf'),
-  } 
-  # for nginx
-  file { [ '/var/www', '/var/www/mars', '/var/www/static/',
-           '/var/www/mars/static']:
-    ensure => 'directory',
-  }
 
   yumrepo { 'ius':
     descr      => 'ius - stable',
@@ -68,9 +45,9 @@ marsversion: ${marsversion}
   vcsrepo { '/opt/mars' :
     ensure   => latest,
     provider => git,
-    source   => 'https://github.com/pothiers/mars.git',
+    source   => 'https://github.com/NOAO/mars.git',
     #!revision => 'master',
-    revision => "${marsversion}",
+    revision => "${naticaversion}",
     owner    => 'devops',
     group    => 'devops',
     require  => User['devops'],
@@ -78,7 +55,7 @@ marsversion: ${marsversion}
     } ->
   package{ ['postgresql', 'postgresql-devel', 'expect'] : } ->
   class { 'python' :
-    version    => 'python35u',
+    version    => 'python36u',
     pip        => 'present',
     dev        => 'present',
     virtualenv => 'absent',  # 'present',
@@ -86,10 +63,10 @@ marsversion: ${marsversion}
     } ->
   file { '/usr/bin/python3':
     ensure => 'link',
-    target => '/usr/bin/python3.5',
+    target => '/usr/bin/python3.6',
     } ->
   python::pyvenv  { '/opt/mars/venv':
-    version  => '3.5',
+    version  => '3.6',
     owner    => 'devops',
     group    => 'devops',
     require  => [ User['devops'], ],
@@ -104,24 +81,6 @@ marsversion: ${marsversion}
     replace => true,
     source  => '/opt/mars/marssite/dal/fixtures/search-schema.json' ,
   } 
-
-  file { '/etc/yum.repos.d/nginx.repo':
-    replace => false,
-    source => 'puppet:///modules/mars/nginx.repo',
-  } ->
-  package { ['nginx'] : }
-
-  
-
-#! yumrepo { 'mars':
-#!   descr    => 'mars',
-#!   baseurl  => "http://mirrors.sdm.noao.edu/mars",
-#!   enabled  => 1,
-#!   gpgcheck => 0,
-#!   priority => 1,
-#!   mirrorlist => absent,
-#! }
-#! -> Package<| provider == 'yum' |>
 
   
 }

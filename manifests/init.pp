@@ -1,6 +1,5 @@
-class mars {
-  #notify{ "Loading mars::init.pp": }
-  include mars::install
-  #! include mars::config
-  include mars::service
+class marsnat {
+  notice("Loading marsnat::init.pp")
+  include marsnat::install
+  include marsnat::service
 }
