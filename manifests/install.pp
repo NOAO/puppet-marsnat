@@ -1,5 +1,5 @@
 class marsnat::install (
-  $naticaversion = hiera('naticaversion', 'master'),
+  $naticaversion = hiera('marsnatversion', 'master'),
   ) {
   notify{"Loading marsnat::install.pp; naticaversion=${naticaversion}":}
 
@@ -13,17 +13,29 @@ class marsnat::install (
     password   => '$1$Pk1b6yel$tPE2h9vxYE248CoGKfhR41',  # tada"Password"
     system     => true,
   }
+
+#!dq_host: ${hiera('dq_host')}
+#!dq_port: ${hiera('dq_port')}
+#!dq_loglevel: ${hiera('dq_loglevel')}
+#!natica_host: ${hiera('natica_host')}
+#!valley_host: ${hiera('valley_host')}
+#!mars_host: ${hiera('mars_host')}
+#!mars_port: ${hiera('mars_port')}
+#!tadaversion: ${hiera('tadaversion')}
+#!dataqversion: ${hiera('dataqversion')}
+#!marsversion: ${hiera('marsversion')}
   file {  '/etc/mars/from-hiera.yaml': 
     ensure  => 'present',
     replace => true,
     content => "---
+
 naticaversion: ${naticaversion}
 ",
     group   => 'root',
     mode    => '0774',
   }
   
-  file { '/etc/mars/natica_local_settings.py':
+  file { '/etc/mars/django_local_settings.py':
     replace => true,
     source  => hiera('localnatica'),
   } 
@@ -45,7 +57,7 @@ naticaversion: ${naticaversion}
   vcsrepo { '/opt/mars' :
     ensure   => latest,
     provider => git,
-    source   => 'https://github.com/NOAO/mars.git',
+    source   => 'https://github.com/NOAO/marsnat.git',
     #!revision => 'master',
     revision => "${naticaversion}",
     owner    => 'devops',
