@@ -1,5 +1,6 @@
 class marsnat::install (
   $naticaversion = hiera('marsnatversion', 'master'),
+  $rsyncpwd      = hiera('rsyncpwd'),
   ) {
   notify{"Loading marsnat::install.pp; naticaversion=${naticaversion}":}
 
@@ -92,7 +93,11 @@ naticaversion: ${naticaversion}
   file { '/etc/mars/search-schema.json':
     replace => true,
     source  => '/opt/mars/marssite/dal/fixtures/search-schema.json' ,
-  } 
-
-  
+  } ->
+  file { '/etc/mars/rsync.pwd':
+    ensure  => 'present',
+    replace => true,
+    mode    => '0400',
+    source  => "${rsyncpwd}",
+  }
 }
