@@ -2,10 +2,11 @@ class marsnat::install (
   $naticaversion = hiera('marsnatversion', 'master'),
   $rsyncpwd      = hiera('rsyncpwd'),
   ) {
-  notify{"Loading marsnat::install.pp; naticaversion=${naticaversion}":}
+  notify{"2Loading marsnat::install.pp; naticaversion=${naticaversion}":}
 
-  ensure_resource('package', ['git', ], {'ensure' => 'present'})
+  include git
   include augeas
+  #ensure_resource('package', ['git', ], {'ensure' => 'present'})
 
   user { 'devops' :
     ensure     => 'present',
@@ -29,7 +30,6 @@ class marsnat::install (
     ensure  => 'present',
     replace => true,
     content => "---
-
 naticaversion: ${naticaversion}
 ",
     group   => 'root',
