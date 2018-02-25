@@ -2,11 +2,11 @@ class marsnat::install (
   $naticaversion = hiera('marsnatversion', 'master'),
   $rsyncpwd      = hiera('rsyncpwd'),
   ) {
-  notify{"2Loading marsnat::install.pp; naticaversion=${naticaversion}":}
+  notify{"Loading marsnat::install.pp; naticaversion=${naticaversion}":}
 
-  include git
+  #include git
   include augeas
-  #ensure_resource('package', ['git', ], {'ensure' => 'present'})
+  ensure_resource('package', ['git', ], {'ensure' => 'present'})
 
   user { 'devops' :
     ensure     => 'present',
@@ -58,7 +58,7 @@ naticaversion: ${naticaversion}
   vcsrepo { '/opt/mars' :
     ensure   => latest,
     provider => git,
-    source   => 'https://github.com/NOAO/marsnat.git',
+    source   => 'git@github.com:NOAO/marsnat.git',
     #!revision => 'master',
     revision => "${naticaversion}",
     owner    => 'devops',
