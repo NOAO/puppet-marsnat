@@ -54,12 +54,17 @@ naticaversion: ${naticaversion}
   file { [ '/var/run/mars', '/var/log/mars', '/etc/mars', '/var/mars']:
     ensure => 'directory',
     mode   => '0777',
-  } ->
+    } ->
+  #! exec { 'allow slow git clone' :
+  #!   # lowSpeedLimit is in bytes/seconds
+  #!   # lowSpeedTime is in seconds
+  #!   command =>  '/usr/bin/git config --system http.lowSpeedLimit 1000; /usr/bin/git config --system http.lowSpeedTime 20'
+  #! } ->
   vcsrepo { '/opt/mars' :
     ensure   => latest,
     provider => git,
     source   => 'git@github.com:NOAO/marsnat.git',
-    #!revision => 'master',
+    #source   => 'https://github.com/NOAO/marsnat.git',
     revision => "${naticaversion}",
     owner    => 'devops',
     group    => 'devops',
