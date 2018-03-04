@@ -1,6 +1,7 @@
 class marsnat::install (
   $naticaversion = hiera('marsnatversion', 'master'),
   $rsyncpwd      = hiera('rsyncpwd'),
+  $archive_topdir      = hiera('archive_topdir'),
   ) {
   notify{"Loading marsnat::install.pp; naticaversion=${naticaversion}":}
 
@@ -26,11 +27,12 @@ class marsnat::install (
 #!tadaversion: ${hiera('tadaversion')}
 #!dataqversion: ${hiera('dataqversion')}
 #!marsversion: ${hiera('marsversion')}
-  file {  '/etc/mars/from-hiera.yaml': 
+  file {  '/etc/mars/hiera_settings.py': 
     ensure  => 'present',
     replace => true,
-    content => "---
-naticaversion: ${naticaversion}
+    content => "# For NATICA from hiera
+naticaversion = '${naticaversion}'
+archive_topdir = '${archive_topdir}'
 ",
     group   => 'root',
     mode    => '0774',
@@ -63,8 +65,9 @@ naticaversion: ${naticaversion}
   vcsrepo { '/opt/mars' :
     ensure   => latest,
     provider => git,
-    source   => 'git@github.com:NOAO/marsnat.git',
-    #source   => 'https://github.com/NOAO/marsnat.git',
+    #source   => 'git@github.com:NOAO/marsnat.git',
+    # for https  to work: yum update -y nss curl libcurl
+    source   => 'https://github.com/NOAO/marsnat.git',
     revision => "${naticaversion}",
     owner    => 'devops',
     group    => 'devops',
@@ -97,7 +100,7 @@ naticaversion: ${naticaversion}
   } -> 
   file { '/etc/mars/search-schema.json':
     replace => true,
-    source  => '/opt/mars/marssite/dal/fixtures/search-schema.json' ,
+    source  => '/opt/mars/marssite/dal/search-schema.json' ,
   } ->
   file { '/etc/mars/rsync.pwd':
     ensure  => 'present',

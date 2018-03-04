@@ -13,7 +13,7 @@ class marsnat::service  (
     user    => 'devops',
     subscribe => [
       Vcsrepo['/opt/mars'], 
-      File['/opt/mars/venv', '/etc/mars/from-hiera.yaml'],
+      File['/opt/mars/venv', '/etc/mars/hiera_settings.py'],
       Python::Requirements['/opt/mars/requirements.txt'],
       ],
   }
