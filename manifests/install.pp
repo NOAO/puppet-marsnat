@@ -45,7 +45,7 @@ archive_topdir = '${archive_topdir}'
 
   yumrepo { 'ius':
     descr      => 'ius - stable',
-    baseurl    => 'http://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/',
+    baseurl    => 'http://dl.iuscommunity.org/pub/ius/stable/CentOS/7/x86_64/',
     enabled    => 1,
     gpgcheck   => 0,
     priority   => 1,
@@ -76,7 +76,8 @@ archive_topdir = '${archive_topdir}'
     } ->
   package{ ['postgresql', 'postgresql-devel', 'expect'] : } ->
   class { 'python' :
-    version    => 'python36u',
+    #version    => 'python36u',
+    version    => 'python37u',
     pip        => 'present',
     dev        => 'present',
     virtualenv => 'absent',  # 'present',
@@ -84,10 +85,12 @@ archive_topdir = '${archive_topdir}'
     } ->
   file { '/usr/bin/python3':
     ensure => 'link',
-    target => '/usr/bin/python3.6',
+    #target => '/usr/bin/python3.6',
+    target => '/usr/bin/python3.7',
     } ->
   python::pyvenv  { '/opt/mars/venv':
-    version  => '3.6',
+    #version  => '3.6',
+    version  => '3.7',
     owner    => 'devops',
     group    => 'devops',
     require  => [ User['devops'], ],
