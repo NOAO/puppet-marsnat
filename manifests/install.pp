@@ -76,8 +76,7 @@ archive_topdir = '${archive_topdir}'
     } ->
   package{ ['postgresql', 'postgresql-devel', 'expect'] : } ->
   class { 'python' :
-    #version    => 'python36u',
-    version    => 'python37u',
+    version    => 'python36u',
     pip        => 'present',
     dev        => 'present',
     virtualenv => 'absent',  # 'present',
@@ -85,12 +84,10 @@ archive_topdir = '${archive_topdir}'
     } ->
   file { '/usr/bin/python3':
     ensure => 'link',
-    #target => '/usr/bin/python3.6',
-    target => '/usr/bin/python3.7',
+    target => '/usr/bin/python3.6',
     } ->
   python::pyvenv  { '/opt/mars/venv':
-    #version  => '3.6',
-    version  => '3.7',
+    version  => '3.6',
     owner    => 'devops',
     group    => 'devops',
     require  => [ User['devops'], ],
