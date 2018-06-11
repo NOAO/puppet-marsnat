@@ -1,13 +1,13 @@
 class marsnat::install (
   $naticaversion = hiera('marsnatversion', 'master'),
-  $rsyncpwd      = hiera('rsyncpwd'),
+  $rsyncpwd      = hiera('rsyncpwd',  'puppet:///modules/dmo-hiera/rsync.pwd'),
   $archive_topdir      = hiera('archive_topdir'),
   ) {
   notify{"Loading marsnat::install.pp; naticaversion=${naticaversion}":}
 
   #include git
   include augeas
-  ensure_resource('package', ['git', ], {'ensure' => 'present'})
+ ensure_resource('package', ['git', ], {'ensure' => 'present'})
 
   user { 'devops' :
     ensure     => 'present',
@@ -74,7 +74,7 @@ archive_topdir = '${archive_topdir}'
     require  => User['devops'],
     notify   => Exec['start mars'],
     } ->
-  package{ ['postgresql', 'postgresql-devel', 'expect'] : } ->
+  package{ ['postgresql', 'postgresql-devel', 'expect', 'nss', 'curl', 'libcurl'] : } ->
   class { 'python' :
     version    => 'python36u',
     pip        => 'present',
