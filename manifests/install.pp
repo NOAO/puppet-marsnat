@@ -4,6 +4,7 @@ class marsnat::install (
   $archive_topdir      = hiera('archive_topdir'),
   ) {
   notify{"Loading marsnat::install.pp; naticaversion=${naticaversion}":}
+  notify{"marsnat::install.pp; rsyncpwd=${rsyncpwd}":}
 
   #include git
   include augeas
