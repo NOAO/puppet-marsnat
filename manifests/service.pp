@@ -5,6 +5,11 @@ class marsnat::service  (
   exec { 'collect status':
     command => "/bin/bash -c 'source /opt/mars/venv/bin/activate; /opt/mars/marssite/manage.py collectstatic'",
     creates => '/opt/mars/marssite/audit/static/audit/screen.css',
+    subscribe => [
+      Vcsrepo['/opt/mars'], 
+      File['/opt/mars/venv'],
+      Python::Requirements['/opt/mars/requirements.txt'],
+      ],
     } 
   exec { 'start mars':
     cwd     => '/opt/mars',

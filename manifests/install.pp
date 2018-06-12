@@ -63,6 +63,9 @@ archive_topdir = '${archive_topdir}'
   #!   # lowSpeedTime is in seconds
   #!   command =>  '/usr/bin/git config --system http.lowSpeedLimit 1000; /usr/bin/git config --system http.lowSpeedTime 20'
   #! } ->
+  package{ ['nss', 'curl', 'libcurl'] :
+      ensure => 'latest',
+    } ->
   vcsrepo { '/opt/mars' :
     ensure   => latest,
     provider => git,
@@ -75,7 +78,7 @@ archive_topdir = '${archive_topdir}'
     require  => User['devops'],
     notify   => Exec['start mars'],
     } ->
-  package{ ['postgresql', 'postgresql-devel', 'expect', 'nss', 'curl', 'libcurl'] : } ->
+  package{ ['postgresql', 'postgresql-devel', 'expect'] : } ->
   class { 'python' :
     version    => 'python36u',
     pip        => 'present',
@@ -102,7 +105,9 @@ archive_topdir = '${archive_topdir}'
   file { '/etc/mars/search-schema.json':
     replace => true,
     source  => '/opt/mars/marssite/dal/search-schema.json' ,
-  } ->
+  }
+
+  # Only included to support testing
   file { '/etc/mars/rsync.pwd':
     ensure  => 'present',
     replace => true,
