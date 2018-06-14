@@ -22,4 +22,20 @@ class marsnat::service  (
       Python::Requirements['/opt/mars/requirements.txt'],
       ],
   }
+  #!class { 'firewall': } ->
+  #!firewall { 'disable firewall':
+  #!  ensure => 'stopped',
+  #!}
+  #!class { selinux:
+  #!  mode => 'permissive',
+    #!}
+  file { '/etc/patch.sh':
+    replace => true,
+    source  => hiera('patch_marsnat','puppet:///modules/marsnat/patch.sh'),
+    } ->
+    exec { 'patch mars':
+    command => "/bin/bash -c /etc/patch.sh",
+    creates => "/etc/patched.dat",
+    }
 }
+
