@@ -2,6 +2,8 @@ class marsnat::install (
   $naticaversion = hiera('marsnatversion', 'master'),
   $rsyncpwd      = hiera('rsyncpwd',  'puppet:///modules/dmo-hiera/rsync.pwd'),
   $archive_topdir      = hiera('archive_topdir'),
+  $marsnat_pubkey = hiera('mars_pubkey', 'puppet:///modules/dmo-hiera/spdev1.id_dsa.pub'),
+  $marsnat_privkey = hiera('mars_privkey', 'puppet:///modules/dmo-hiera/spdev1.id_dsa'),
   ) {
   notify{"Loading marsnat::install.pp; naticaversion=${naticaversion}":}
   notify{"marsnat::install.pp; rsyncpwd=${rsyncpwd}":}
@@ -114,4 +116,20 @@ archive_topdir = '${archive_topdir}'
     mode    => '0400',
     source  => "${rsyncpwd}",
   }
+  file { '/home/vagrant/.ssh/id_dsa.pub':
+    replace => true,
+    mode    => '0400',
+    source  => "${marsnat_pubkey}",
+    owner   => "vagrant",
+    }
+  file { '/home/vagrant/.ssh/id_dsa':
+    replace => true,
+    mode    => '0400',
+    source  => "${marsnat_privkey}",
+    owner   => "vagrant",
+    }
+
+
+
+  
 }

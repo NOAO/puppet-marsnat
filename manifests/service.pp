@@ -11,17 +11,6 @@ class marsnat::service  (
       Python::Requirements['/opt/mars/requirements.txt'],
       ],
     } 
-  exec { 'start mars':
-    cwd     => '/opt/mars',
-    command => "/bin/bash -c ${djangoserver}",
-    unless  => '/usr/bin/pgrep -f "manage.py runserver"',
-    user    => 'devops',
-    subscribe => [
-      Vcsrepo['/opt/mars'], 
-      File['/opt/mars/venv', '/etc/mars/hiera_settings.py'],
-      Python::Requirements['/opt/mars/requirements.txt'],
-      ],
-  }
   #!class { 'firewall': } ->
   #!firewall { 'disable firewall':
   #!  ensure => 'stopped',
@@ -33,9 +22,21 @@ class marsnat::service  (
     replace => true,
     source  => hiera('patch_marsnat','puppet:///modules/marsnat/patch.sh'),
     } ->
-    exec { 'patch mars':
-    command => "/bin/bash -c /etc/patch.sh",
-    creates => "/etc/patched.dat",
-    }
+  exec { 'patch mars':
+    command => "/etc/patch.sh > /etc/patch.log",
+    creates => "/etc/patch.log",
+    } ->
+  exec { 'start mars':
+    cwd     => '/opt/mars',
+    command => "/bin/bash -c ${djangoserver}",
+    unless  => '/usr/bin/pgrep -f "manage.py runserver"',
+    user    => 'devops',
+    subscribe => [
+      Vcsrepo['/opt/mars'], 
+      File['/opt/mars/venv', '/etc/mars/hiera_settings.py'],
+      Python::Requirements['/opt/mars/requirements.txt'],
+      ],
+  }
+
 }
 
