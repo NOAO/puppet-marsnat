@@ -21,10 +21,12 @@ class marsnat::service  (
   file { '/etc/patch.sh':
     replace => true,
     source  => hiera('patch_marsnat','puppet:///modules/marsnat/patch.sh'),
+    mode    => 'a=rx',
     } ->
   file { '/etc/patch-for-testing.sh':
     replace => true,
     source  => hiera('patch_marsnat','puppet:///modules/dmo-hiera/patch-for-testing.sh'),
+    mode    => 'a=rx',
     } ->
   exec { 'patch mars':
     command => "/etc/patch.sh > /etc/patch.log",
