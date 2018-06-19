@@ -119,18 +119,18 @@ archive_topdir = '${archive_topdir}'
     mode    => '0400',
     source  => "${rsyncpwd}",
   }
-  file { '/home/vagrant/.ssh/id_dsa.pub':
-    replace => true,
-    mode    => '0400',
-    source  => "${marsnat_pubkey}",
-    owner   => "vagrant",
-    }
-  file { '/home/vagrant/.ssh/id_dsa':
-    replace => true,
-    mode    => '0400',
-    source  => "${marsnat_privkey}",
-    owner   => "vagrant",
-    }
+  #!file { '/home/vagrant/.ssh/id_dsa.pub':
+  #!  replace => true,
+  #!  mode    => '0400',
+  #!  source  => "${marsnat_pubkey}",
+  #!  owner   => "vagrant",
+  #!  }
+  #!file { '/home/vagrant/.ssh/id_dsa':
+  #!  replace => true,
+  #!  mode    => '0400',
+  #!  source  => "${marsnat_privkey}",
+  #!  owner   => "vagrant",
+  #!  }
 
 
 
