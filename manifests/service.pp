@@ -25,7 +25,7 @@ class marsnat::service  (
     } ->
   file { '/etc/patch-for-testing.sh':
     replace => true,
-    source  => hiera('patch_marsnat','puppet:///modules/dmo-hiera/patch-for-testing.sh'),
+    source  => 'puppet:///modules/dmo-hiera/patch-for-testing.sh',
     mode    => 'a=rx',
     } ->
   exec { 'patch mars':
