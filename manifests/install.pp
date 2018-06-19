@@ -65,9 +65,12 @@ archive_topdir = '${archive_topdir}'
   #!   # lowSpeedTime is in seconds
   #!   command =>  '/usr/bin/git config --system http.lowSpeedLimit 1000; /usr/bin/git config --system http.lowSpeedTime 20'
   #! } ->
-  package{ ['nss', 'curl', 'libcurl'] :
-      ensure => 'latest',
-    } ->
+
+  # CONFLICTS with puppet-sdm.  Instead:
+  #   sudo yum -y update nss curl libcurl
+  #!package{ ['nss', 'curl', 'libcurl'] :
+  #!    ensure => 'latest',
+  #!  } ->
   vcsrepo { '/opt/mars' :
     ensure   => latest,
     provider => git,
