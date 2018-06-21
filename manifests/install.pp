@@ -4,6 +4,8 @@ class marsnat::install (
   $archive_topdir      = hiera('archive_topdir'),
   $marsnat_pubkey = hiera('mars_pubkey', 'puppet:///modules/dmo-hiera/spdev1.id_dsa.pub'),
   $marsnat_privkey = hiera('mars_privkey', 'puppet:///modules/dmo-hiera/spdev1.id_dsa'),
+  $test_mtn_host= hiera('test_mtn_host'),
+  $test_val_host= hiera('test_val_host'),
   ) {
   notify{"Loading marsnat::install.pp; naticaversion=${naticaversion}":}
   notify{"marsnat::install.pp; rsyncpwd=${rsyncpwd}":}
@@ -30,12 +32,15 @@ class marsnat::install (
 #!tadaversion: ${hiera('tadaversion')}
 #!dataqversion: ${hiera('dataqversion')}
 #!marsversion: ${hiera('marsversion')}
-  file {  '/etc/mars/hiera_settings.py': 
+  file {  '/etc/mars/hiera_settings.yaml': 
     ensure  => 'present',
     replace => true,
-    content => "# For NATICA from hiera
-naticaversion = '${naticaversion}'
-archive_topdir = '${archive_topdir}'
+    content => "---
+# For NATICA from hiera
+naticaversion: '${naticaversion}'
+archive_topdir: '${archive_topdir}'
+test_mtn_host: '${test_mtn_host}'
+test_val_host: '${test_val_host}'
 ",
     group   => 'root',
     mode    => '0774',
@@ -66,11 +71,18 @@ archive_topdir = '${archive_topdir}'
   #!   command =>  '/usr/bin/git config --system http.lowSpeedLimit 1000; /usr/bin/git config --system http.lowSpeedTime 20'
   #! } ->
 
-  # CONFLICTS with puppet-sdm.  Instead:
-  #   sudo yum -y update nss curl libcurl
-  #!package{ ['nss', 'curl', 'libcurl'] :
-  #!    ensure => 'latest',
-  #!  } ->
+  # CONFLICTS with puppet-sdm when using PACKAGE resource Instead:
+  #   sudo yum  update -y nss curl libcurl
+  #  OR do funny puppet stuff to get around duplicate delcaration
+  #   see https://puppet.com/docs/puppet/5.3/lang_resources.html#uniqueness
+  #
+  # Following will fail unless ALL declarations use ensure_package
+  #! ensure_packages(['nss', 'curl', 'libcurl'], {ensure => 'latest'})
+  # Following fails with "Could not find dcleraed class package ...
+  #! class { 'package':  
+  #!   name   => ['nss', 'curl', 'libcurl'],
+  #!   ensure => 'latest',
+  #!   } ->
   vcsrepo { '/opt/mars' :
     ensure   => latest,
     provider => git,
