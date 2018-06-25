@@ -78,7 +78,7 @@ test_val_host: '${test_val_host}'
   #
   # Following will fail unless ALL declarations use ensure_package
   #! ensure_packages(['nss', 'curl', 'libcurl'], {ensure => 'latest'})
-  # Following fails with "Could not find dcleraed class package ...
+  # Following fails with "Could not find declared class package ...
   #! class { 'package':  
   #!   name   => ['nss', 'curl', 'libcurl'],
   #!   ensure => 'latest',
