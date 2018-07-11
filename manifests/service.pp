@@ -25,13 +25,13 @@ class marsnat::service  (
     } ->
   file { '/etc/patch-for-testing.sh':
     replace => true,
-    source  => 'puppet:///modules/dmo-hiera/patch-for-testing.sh',
+    source  => 'puppet:///modules/dmo_hiera/patch-for-testing.sh',
     mode    => 'a=rx',
     } ->
-  exec { 'patch mars':
-    command => "/etc/patch.sh > /etc/patch.log",
-    creates => "/etc/patch.log",
-    } ->
+#!  exec { 'patch mars':
+#!    command => "/etc/patch.sh > /etc/patch.log",
+#!    creates => "/etc/patch.log",
+#!    } ->
   exec { 'start mars':
     cwd     => '/opt/mars',
     command => "/bin/bash -c ${djangoserver}",

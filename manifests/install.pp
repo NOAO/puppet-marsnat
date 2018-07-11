@@ -1,9 +1,9 @@
 class marsnat::install (
   $naticaversion = hiera('marsnatversion', 'master'),
-  $rsyncpwd      = hiera('rsyncpwd',  'puppet:///modules/dmo-hiera/rsync.pwd'),
+  $rsyncpwd      = hiera('rsyncpwd',  'puppet:///modules/dmo_hiera/rsync.pwd'),
   $archive_topdir      = hiera('archive_topdir'),
-  $marsnat_pubkey = hiera('mars_pubkey', 'puppet:///modules/dmo-hiera/spdev1.id_dsa.pub'),
-  $marsnat_privkey = hiera('mars_privkey', 'puppet:///modules/dmo-hiera/spdev1.id_dsa'),
+  $marsnat_pubkey = hiera('mars_pubkey', 'puppet:///modules/dmo_hiera/spdev1.id_dsa.pub'),
+  $marsnat_privkey = hiera('mars_privkey', 'puppet:///modules/dmo_hiera/spdev1.id_dsa'),
   $test_mtn_host= hiera('test_mtn_host'),
   $test_val_host= hiera('test_val_host'),
   ) {
@@ -11,8 +11,8 @@ class marsnat::install (
   notify{"marsnat::install.pp; rsyncpwd=${rsyncpwd}":}
 
   #include git
-  include augeas
- ensure_resource('package', ['git', ], {'ensure' => 'present'})
+  #!include augeas
+  ensure_resource('package', ['git', ], {'ensure' => 'present'})
 
   user { 'devops' :
     ensure     => 'present',
