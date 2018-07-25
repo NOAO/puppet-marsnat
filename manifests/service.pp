@@ -1,5 +1,6 @@
 class marsnat::service  (
-  $djangoserver = hiera('djangoserver', '/opt/mars/start-mars-production.sh'),
+  $djangoserver = lookup('djangoserver',  {
+    'default_value' => '/opt/mars/start-mars-production.sh'}),
   ) {
   notify{ "Loading marsnat::service.pp; ${djangoserver}": } # output to puppet client
   exec { 'collect status':
@@ -20,7 +21,8 @@ class marsnat::service  (
     #!}
   file { '/etc/patch.sh':
     replace => true,
-    source  => hiera('patch_marsnat','puppet:///modules/marsnat/patch.sh'),
+    source  => lookup('patch_marsnat', {
+      'default_value' => 'puppet:///modules/marsnat/patch.sh'}),
     mode    => 'a=rx',
     } ->
   file { '/etc/patch-for-testing.sh':

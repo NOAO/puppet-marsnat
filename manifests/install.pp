@@ -1,11 +1,24 @@
 class marsnat::install (
-  $naticaversion = hiera('marsnatversion', 'master'),
-  $rsyncpwd      = hiera('rsyncpwd',  'puppet:///modules/dmo_hiera/rsync.pwd'),
-  $archive_topdir      = hiera('archive_topdir'),
-  $marsnat_pubkey = hiera('mars_pubkey', 'puppet:///modules/dmo_hiera/spdev1.id_dsa.pub'),
-  $marsnat_privkey = hiera('mars_privkey', 'puppet:///modules/dmo_hiera/spdev1.id_dsa'),
-  $test_mtn_host= hiera('test_mtn_host'),
-  $test_val_host= hiera('test_val_host'),
+  $naticaversion = lookup('marsnatversion', {'default_value' =>'master'}),
+  $rsyncpwd      = lookup('rsyncpwd',  {
+    'default_value' => 'puppet:///modules/dmo_hiera/rsync.pwd'}),
+  $archive_topdir  = lookup('archive_topdir'),
+  $marsnat_pubkey = lookup('mars_pubkey', {
+    'default_value' => 'puppet:///modules/dmo_hiera/spdev1.id_dsa.pub'}),
+  $marsnat_privkey = lookup('mars_privkey', {
+    'default_value' => 'puppet:///modules/dmo_hiera/spdev1.id_dsa'}),
+  $test_mtn_host= lookup('test_mtn_host'),
+  $test_val_host= lookup('test_val_host'),
+  #!dq_host: ${lookup('dq_host')}
+  #!dq_port: ${lookup('dq_port')}
+  #!dq_loglevel: ${lookup('dq_loglevel')}
+  #!natica_host: ${lookup('natica_host')}
+  #!valley_host: ${lookup('valley_host')}
+  #!mars_host: ${lookup('mars_host')}
+  #!mars_port: ${lookup('mars_port')}
+  #!tadaversion: ${lookup('tadaversion')}
+  #!dataqversion: ${lookup('dataqversion')}
+  #!marsversion: ${lookup('marsversion')}
   ) {
   notify{"Loading marsnat::install.pp; naticaversion=${naticaversion}":}
   notify{"marsnat::install.pp; rsyncpwd=${rsyncpwd}":}
@@ -22,16 +35,6 @@ class marsnat::install (
     system     => true,
   }
 
-#!dq_host: ${hiera('dq_host')}
-#!dq_port: ${hiera('dq_port')}
-#!dq_loglevel: ${hiera('dq_loglevel')}
-#!natica_host: ${hiera('natica_host')}
-#!valley_host: ${hiera('valley_host')}
-#!mars_host: ${hiera('mars_host')}
-#!mars_port: ${hiera('mars_port')}
-#!tadaversion: ${hiera('tadaversion')}
-#!dataqversion: ${hiera('dataqversion')}
-#!marsversion: ${hiera('marsversion')}
   file {  '/etc/mars/hiera_settings.yaml': 
     ensure  => 'present',
     replace => true,
@@ -48,7 +51,7 @@ test_val_host: '${test_val_host}'
   
   file { '/etc/mars/django_local_settings.py':
     replace => true,
-    source  => hiera('localnatica'),
+    source  => lookup('localnatica'),
   } 
 
   yumrepo { 'ius':
@@ -96,17 +99,22 @@ test_val_host: '${test_val_host}'
     notify   => Exec['start mars'],
     } ->
   package{ ['postgresql', 'postgresql-devel', 'expect'] : } ->
+  package{ ['python36u-pip'] : } ->
+    # Will try to install wrong (python3-pip) version of pip under non-SCL.
+    # We WANT:
+    #   sudo yum -y install python36u-pip
   class { 'python' :
     version    => 'python36u',
-    pip        => 'present',
-    dev        => 'present',
-    virtualenv => 'absent',  # 'present',
+    ensure     => 'latest',
+    pip        => 'absent', # 'latest' will try to install "python3-pip"
+    dev        => 'latest',
+    #! virtualenv => 'absent', # 'present', 'latest', 
     gunicorn   => 'absent',
     } ->
-  file { '/usr/bin/python3':
-    ensure => 'link',
-    target => '/usr/bin/python3.6',
-    } ->
+#!  file { '/usr/bin/python3':  #@@@ ok to remove???
+#!    ensure => 'link',
+#!    target => '/usr/bin/python3.6',
+#!   } ->
   python::pyvenv  { '/opt/mars/venv':
     version  => '3.6',
     owner    => 'devops',
@@ -114,10 +122,12 @@ test_val_host: '${test_val_host}'
     require  => [ User['devops'], ],
   } ->
   python::requirements  { '/opt/mars/requirements.txt':
-    virtualenv => '/opt/mars/venv',
-    owner    => 'devops',
-    group    => 'devops',
-    require  => [ User['devops'], ],
+    virtualenv   => '/opt/mars/venv',
+    pip_provider => 'pip3',
+    owner        => 'devops',
+    group        => 'devops',
+    forceupdate  => true,
+    require      => [ User['devops'], ],
   } -> 
   file { '/etc/mars/search-schema.json':
     replace => true,
