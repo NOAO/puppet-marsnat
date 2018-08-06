@@ -26,7 +26,7 @@ class marsnat::install (
   #include git
   #!include augeas
   ensure_resource('package', ['git', ], {'ensure' => 'present'})
-  package{ ['epel-release', 'jemalloc'] : } 
+  package{ ['epel-release', 'jemalloc', 'ganglia'] : }
 
   user { 'devops' :
     ensure     => 'present',
