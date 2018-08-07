@@ -1,8 +1,9 @@
 class marsnat::install (
-  $marsnatversion = lookup('marsnatversion', {'default_value' =>'master'}),
+  $marsnatversion = lookup('marsnatversion'},
   $rsyncpwd      = lookup('rsyncpwd',  {
     'default_value' => 'puppet:///modules/dmo_hiera/rsync.pwd'}),
-  $archive_topdir  = lookup('archive_topdir'),
+  $archive_topdir  = lookup('archive_topdir', {
+    'default_value' => '/archive_data'}),
   $marsnat_pubkey = lookup('mars_pubkey', {
     'default_value' => 'puppet:///modules/dmo_hiera/spdev1.id_dsa.pub'}),
   $marsnat_privkey = lookup('mars_privkey', {
