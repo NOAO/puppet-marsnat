@@ -1,5 +1,5 @@
 class marsnat::install (
-  $marsnatversion = lookup('marsnatversion'},
+  $marsnatversion = lookup('marsnatversion'),
   $rsyncpwd      = lookup('rsyncpwd',  {
     'default_value' => 'puppet:///modules/dmo_hiera/rsync.pwd'}),
   $archive_topdir  = lookup('archive_topdir', {
