@@ -1,5 +1,5 @@
 class marsnat::install (
-  $naticaversion = lookup('marsnatversion', {'default_value' =>'master'}),
+  $marsnatversion = lookup('marsnatversion', {'default_value' =>'master'}),
   $rsyncpwd      = lookup('rsyncpwd',  {
     'default_value' => 'puppet:///modules/dmo_hiera/rsync.pwd'}),
   $archive_topdir  = lookup('archive_topdir'),
@@ -20,7 +20,7 @@ class marsnat::install (
   #!dataqversion: ${lookup('dataqversion')}
   #!marsversion: ${lookup('marsversion')}
   ) {
-  notify{"Loading marsnat::install.pp; naticaversion=${naticaversion}":}
+  notify{"Loading marsnat::install.pp; marsnatversion=${marsnatversion}":}
   notify{"marsnat::install.pp; rsyncpwd=${rsyncpwd}":}
 
   #include git
@@ -41,7 +41,7 @@ class marsnat::install (
     replace => true,
     content => "---
 # For NATICA from hiera
-naticaversion: '${naticaversion}'
+marsnatversion: '${marsnatversion}'
 archive_topdir: '${archive_topdir}'
 test_mtn_host: '${test_mtn_host}'
 test_val_host: '${test_val_host}'
@@ -93,7 +93,7 @@ test_val_host: '${test_val_host}'
     #source   => 'git@github.com:NOAO/marsnat.git',
     # for https  to work: yum update -y nss curl libcurl
     source   => 'https://github.com/NOAO/marsnat.git',
-    revision => "${naticaversion}",
+    revision => "${marsnatversion}",
     owner    => 'devops',
     group    => 'devops',
     require  => User['devops'],
