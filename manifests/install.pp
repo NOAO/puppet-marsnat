@@ -163,7 +163,14 @@ test_val_host: '${test_val_host}'
   #!  owner   => "vagrant",
   #!  }
 
-
-
+  vcsrepo { '/opt/test-fits' :
+    ensure   => latest,
+    provider => git,
+    source   => 'https://bitbucket.org/noao/test-fits.git',
+    revision => "master",
+    owner    => 'devops',
+    group    => 'devops',
+    require  => User['devops'],
+    }
   
 }
