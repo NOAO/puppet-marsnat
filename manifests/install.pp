@@ -33,15 +33,18 @@ class marsnat::install (
     ensure     => 'present',
     comment    => 'For python virtualenv and running mars.',
     managehome => true,
-    password   => '$1$Pk1b6yel$tPE2h9vxYE248CoGKfhR41',  # tada"Password"
+    # tadapassword/xxxx_||.x.
+    password   => '$1$Pk1b6yel$tPE2h9vxYE248CoGKfhR41',  
     system     => true,
-  }
+  } ->
   user { 'tester' :
     ensure     => 'present',
     comment    => 'For testing NATICA.',
     managehome => true,
-    password   => '$1$Pk1b6yel$tPE2h9vxYE248CoGKfhR41',  # tada"Password"
+    # tadapassword/xxxx_||.x.
+    password   => '$1$Pk1b6yel$tPE2h9vxYE248CoGKfhR41',  
     system     => true,
+    groups     => 'devops',
   }
 
   file {  '/etc/mars/hiera_settings.yaml': 
@@ -173,4 +176,5 @@ test_val_host: '${test_val_host}'
 #!    require  => User['devops'],
 #!    }
   
+
 }
