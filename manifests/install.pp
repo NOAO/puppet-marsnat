@@ -146,6 +146,12 @@ test_val_host: '${test_val_host}'
     source  => '/opt/mars/marssite/dal/search-schema.json' ,
   }
 
+  file { '/etc/logrotate.d/mars':
+    ensure  => 'present',
+    replace => true,
+    source  => 'puppet:///modules/marsnat/mars.logrotate',
+  }
+  
   # Only included to support testing
   file { '/etc/mars/rsync.pwd':
     ensure  => 'present',
