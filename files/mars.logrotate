@@ -7,16 +7,3 @@
     su devops devops
 }
 
-/var/log/mars/*.err {
-    compress
-    size 10k
-    rotate 3
-    su devops devops
-}
-
-/var/log/rsyncd.log {
-    compress
-    size 100M
-    rotate 3
-}
-
