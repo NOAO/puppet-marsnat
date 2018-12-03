@@ -4,6 +4,8 @@ class marsnat::install (
     'default_value' => 'puppet:///modules/dmo_hiera/rsync.pwd'}),
   $archive_topdir  = lookup('archive_topdir', {
     'default_value' => '/archive_data'}),
+  $hdrfunclibversion = lookup('hdrfunclibversion', {
+    'default_value' => 'master'}),
   $marsnat_pubkey = lookup('mars_pubkey', {
     'default_value' => 'puppet:///modules/dmo_hiera/spdev1.id_dsa.pub'}),
   $marsnat_privkey = lookup('mars_privkey', {
@@ -27,7 +29,7 @@ class marsnat::install (
   #include git
   #!include augeas
   ensure_resource('package', ['git', ], {'ensure' => 'present'})
-  package{ ['epel-release', 'jemalloc', 'ganglia'] : }
+  package{ ['epel-release', 'jemalloc', 'ganglia', 'nginx'] : }
 
   user { 'devops' :
     ensure     => 'present',
@@ -110,6 +112,17 @@ test_val_host: '${test_val_host}'
     require  => User['devops'],
     notify   => Exec['start mars'],
     } ->
+  vcsrepo { '/opt/mars/marssite/hdrfunclib' :
+    ensure   => latest,
+    #!ensure   => bare,
+    provider => git,
+    source   => 'https://github.com/NOAO/hdrfunclib.git',
+    revision => "${hdrfunclibversion}", 
+    owner    => 'devops', 
+    group    => 'devops',
+    require  => User['devops'],
+    notify   => Exec['start mars'],
+    } ->
   package{ ['postgresql', 'postgresql-devel', 'expect'] : } ->
   package{ ['python36u-pip'] : } ->
     # Will try to install wrong (python3-pip) version of pip under non-SCL.
@@ -182,5 +195,25 @@ test_val_host: '${test_val_host}'
 #!    require  => User['devops'],
 #!    }
   
+  file { [ '/etc/nginx', '/etc/nginx/sites-enabled']:
+    ensure => 'directory',
+    mode   => '0777',
+    } ->
+  file { '/etc/nginx/sites-enabled/default' :
+    ensure  => 'present',      
+    source  => 'puppet:///modules/marsnat/nginx-app.conf',
+    } ->
+  file { '/etc/nginx/nginx.conf' :
+    ensure  => 'present',      
+    source  => 'puppet:///modules/marsnat/nginx.conf',
+    } ->
+  file { '/etc/nginx/uwsgi.ini' :
+    ensure  => 'present',      
+    source  => 'puppet:///modules/marsnat/uwsgi.ini',
+    } ->
+  file { '/etc/nginx/uwsgi_params' :
+    ensure  => 'present',      
+    source  => 'puppet:///modules/marsnat/uwsgi_params',
+    } 
 
 }
