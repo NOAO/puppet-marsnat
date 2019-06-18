@@ -112,11 +112,22 @@ test_val_host: '${test_val_host}'
     require  => User['devops'],
     notify   => Exec['start mars'],
     } ->
-  vcsrepo { '/opt/mars/marssite/hdrfunclib' :
+  #!vcsrepo { '/opt/mars/marssite/hdrfunclib' :
+  #!  ensure   => latest,
+  #!  #!ensure   => bare,
+  #!  provider => git,
+  #!  source   => 'https://github.com/NOAO/hdrfunclib.git',
+  #!  revision => "${hdrfunclibversion}", 
+  #!  owner    => 'devops', 
+  #!  group    => 'devops',
+  #!  require  => User['devops'],
+  #!  notify   => Exec['start mars'],
+  #!  } ->
+  vcsrepo { '/opt/mars/marssite/personality' :
     ensure   => latest,
     #!ensure   => bare,
     provider => git,
-    source   => 'https://github.com/NOAO/hdrfunclib.git',
+    source   => 'https://github.com/NOAO/personality.git',
     revision => "${hdrfunclibversion}", 
     owner    => 'devops', 
     group    => 'devops',
