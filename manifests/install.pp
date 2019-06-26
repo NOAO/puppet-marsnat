@@ -135,6 +135,7 @@ test_val_host: '${test_val_host}'
     notify   => Exec['start mars'],
     } ->
   package{ ['postgresql', 'postgresql-devel', 'expect'] : } ->
+  #package{ ['python36u-pip', 'python34-pylint'] : } ->
   package{ ['python36u-pip'] : } ->
     # Will try to install wrong (python3-pip) version of pip under non-SCL.
     # We WANT:
@@ -147,10 +148,6 @@ test_val_host: '${test_val_host}'
     #! virtualenv => 'absent', # 'present', 'latest', 
     gunicorn   => 'absent',
     } ->
-#!  file { '/usr/bin/python3':  #@@@ ok to remove???
-#!    ensure => 'link',
-#!    target => '/usr/bin/python3.6',
-#!   } ->
   python::pyvenv  { '/opt/mars/venv':
     version  => '3.6',
     owner    => 'devops',
