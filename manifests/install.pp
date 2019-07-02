@@ -4,7 +4,7 @@ class marsnat::install (
     'default_value' => 'puppet:///modules/dmo_hiera/rsync.pwd'}),
   $archive_topdir  = lookup('archive_topdir', {
     'default_value' => '/archive_data'}),
-  $hdrfunclibversion = lookup('hdrfunclibversion', {
+  $personalityversion = lookup('personalityversion', {
     'default_value' => 'master'}),
   $marsnat_pubkey = lookup('mars_pubkey', {
     'default_value' => 'puppet:///modules/dmo_hiera/spdev1.id_dsa.pub'}),
@@ -12,6 +12,7 @@ class marsnat::install (
     'default_value' => 'puppet:///modules/dmo_hiera/spdev1.id_dsa'}),
   $test_mtn_host= lookup('test_mtn_host'),
   $test_val_host= lookup('test_val_host'),
+  $marsnat_replace = lookup('marsnat_replace', {'default_value' => true }),
   #!dq_host: ${lookup('dq_host')}
   #!dq_port: ${lookup('dq_port')}
   #!dq_loglevel: ${lookup('dq_loglevel')}
@@ -51,7 +52,7 @@ class marsnat::install (
 
   file {  '/etc/mars/hiera_settings.yaml': 
     ensure  => 'present',
-    replace => true,
+    replace => "${marsnat_replace}",
     content => "---
 # For NATICA from hiera
 marsnatversion: '${marsnatversion}'
@@ -64,7 +65,7 @@ test_val_host: '${test_val_host}'
   }
   
   file { '/etc/mars/django_local_settings.py':
-    replace => true,
+    replace => "${marsnat_replace}",
     source  => lookup('localnatica'),
   } 
 
@@ -112,7 +113,7 @@ test_val_host: '${test_val_host}'
     #!ensure   => bare,
     provider => git,
     source   => 'https://github.com/NOAO/personality.git',
-    revision => "${hdrfunclibversion}", 
+    revision => "${personalityversion}", 
     owner    => 'devops', 
     group    => 'devops',
     require  => User['devops'],
@@ -147,20 +148,20 @@ test_val_host: '${test_val_host}'
     require      => [ User['devops'], ],
   } -> 
   file { '/etc/mars/search-schema.json':
-    replace => true,
+    replace => "${marsnat_replace}",
     source  => '/opt/mars/marssite/dal/search-schema.json' ,
   }
 
   file { '/etc/logrotate.d/mars':
     ensure  => 'present',
-    replace => true,
+    replace => "${marsnat_replace}",
     source  => 'puppet:///modules/marsnat/mars.logrotate',
   }
   
   # Only included to support testing
   file { '/etc/mars/rsync.pwd':
     ensure  => 'present',
-    replace => true,
+    replace => "${marsnat_replace}",
     mode    => '0400',
     source  => "${rsyncpwd}",
   }
