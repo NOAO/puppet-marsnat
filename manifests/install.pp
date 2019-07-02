@@ -82,11 +82,6 @@ test_val_host: '${test_val_host}'
     ensure => 'directory',
     mode   => '0777',
     } ->
-  #! exec { 'allow slow git clone' :
-  #!   # lowSpeedLimit is in bytes/seconds
-  #!   # lowSpeedTime is in seconds
-  #!   command =>  '/usr/bin/git config --system http.lowSpeedLimit 1000; /usr/bin/git config --system http.lowSpeedTime 20'
-  #! } ->
 
   # CONFLICTS with puppet-sdm when using PACKAGE resource Instead:
   #   sudo yum  update -y nss curl libcurl
@@ -112,17 +107,6 @@ test_val_host: '${test_val_host}'
     require  => User['devops'],
     notify   => Exec['start mars'],
     } ->
-  #!vcsrepo { '/opt/mars/marssite/hdrfunclib' :
-  #!  ensure   => latest,
-  #!  #!ensure   => bare,
-  #!  provider => git,
-  #!  source   => 'https://github.com/NOAO/hdrfunclib.git',
-  #!  revision => "${hdrfunclibversion}", 
-  #!  owner    => 'devops', 
-  #!  group    => 'devops',
-  #!  require  => User['devops'],
-  #!  notify   => Exec['start mars'],
-  #!  } ->
   vcsrepo { '/opt/mars/marssite/personality' :
     ensure   => latest,
     #!ensure   => bare,
@@ -192,16 +176,16 @@ test_val_host: '${test_val_host}'
   #!  source  => "${marsnat_privkey}",
   #!  owner   => "vagrant",
   #!  }
-
-#!  vcsrepo { '/opt/test-fits' :
-#!    ensure   => latest,
-#!    provider => git,
-#!    source   => 'https://bitbucket.org/noao/test-fits.git',
-#!    revision => "master",
-#!    owner    => 'devops',
-#!    group    => 'devops',
-#!    require  => User['devops'],
-#!    }
+  #!
+  #!vcsrepo { '/opt/test-fits' :
+  #!  ensure   => latest,
+  #!  provider => git,
+  #!  source   => 'https://bitbucket.org/noao/test-fits.git',
+  #!  revision => "master",
+  #!  owner    => 'devops',
+  #!  group    => 'devops',
+  #!  require  => User['devops'],
+  #!  }
   
   file { [ '/etc/nginx', '/etc/nginx/sites-enabled']:
     ensure => 'directory',
