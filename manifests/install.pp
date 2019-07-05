@@ -182,9 +182,8 @@ test_val_host: '${test_val_host}'
     require  => User['devops'],
     notify   => Exec['start mars'],
     } ->
-  vcsrepo { '/opt/mars/marssite/personality' :
+  vcsrepo { '/opt/personality' :
     ensure   => latest,
-    #!ensure   => bare,
     provider => git,
     source   => 'https://github.com/NOAO/personality.git',
     revision => "${personalityversion}", 
@@ -193,6 +192,10 @@ test_val_host: '${test_val_host}'
     require  => User['devops'],
     notify   => Exec['start mars'],
     } ->
+  file { '/opt/mars/marssite/pers' :
+    ensure => 'link',
+    target => '/opt/personality/pers',
+  }
   package{ ['postgresql', 'postgresql-devel', 'expect'] : } ->
   #package{ ['python36u-pip', 'python34-pylint'] : } ->
   package{ ['python36u-pip'] : } ->

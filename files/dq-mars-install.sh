@@ -9,9 +9,11 @@ LOG="/var/log/mars/install-dataq.log"
 date                              > $LOG
 source /opt/mars/venv/bin/activate
 
+#e.g. cd /opt/dqnat
+cd /opt/dqnat
+
 dir=`pwd`
-#e.g. cd /opt/data-queue
-VERSION=`cat dataq/VERSION`
+VERSION=`cat /opt/dqnat/dataq/VERSION`
 echo "Running install on dir: $dir"
 
 python3 setup.py install --force >> $LOG
