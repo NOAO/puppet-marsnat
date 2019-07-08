@@ -153,10 +153,6 @@ test_val_host: '${test_val_host}'
   }
   -> Package<| provider == 'yum' |>
 
-  file { [ '/var/run/mars', '/var/log/mars', '/etc/mars', '/var/mars']:
-    ensure => 'directory',
-    mode   => '0777',
-    } ->
 
   # CONFLICTS with puppet-sdm when using PACKAGE resource Instead:
   #   sudo yum  update -y nss curl libcurl
@@ -234,36 +230,7 @@ test_val_host: '${test_val_host}'
     source  => 'puppet:///modules/marsnat/mars.logrotate',
   }
   
-  # Only included to support testing
-  file { '/etc/mars/rsync.pwd':
-    ensure  => 'present',
-    replace => "${marsnat_replace}",
-    mode    => '0400',
-    source  => "${rsyncpwd}",
-  }
-  #!file { '/home/vagrant/.ssh/id_dsa.pub':
-  #!  replace => true,
-  #!  mode    => '0400',
-  #!  source  => "${marsnat_pubkey}",
-  #!  owner   => "vagrant",
-  #!  }
-  #!file { '/home/vagrant/.ssh/id_dsa':
-  #!  replace => true,
-  #!  mode    => '0400',
-  #!  source  => "${marsnat_privkey}",
-  #!  owner   => "vagrant",
-  #!  }
-  #!
-  #!vcsrepo { '/opt/test-fits' :
-  #!  ensure   => latest,
-  #!  provider => git,
-  #!  source   => 'https://bitbucket.org/noao/test-fits.git',
-  #!  revision => "master",
-  #!  owner    => 'devops',
-  #!  group    => 'devops',
-  #!  require  => User['devops'],
-  #!  }
-  
+
   file { [ '/etc/nginx', '/etc/nginx/sites-enabled']:
     ensure => 'directory',
     mode   => '0777',

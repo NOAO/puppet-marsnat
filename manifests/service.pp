@@ -53,9 +53,9 @@ class marsnat::service  (
     # so duplicate should never happen UNLESS done manually.
   service { 'dqd':
     ensure   => 'running',
-    subscribe => [File[#'/etc/tada/dqd.conf',
-                       #'/etc/tada/from-hiera.yaml',
-                       #'/etc/tada/tada.conf',
+    subscribe => [File[#'/etc/mars/dqd.conf',
+                       #'/etc/mars/from-hiera.yaml',
+                       #'/etc/mars/tada.conf',
                        '/etc/init.d/dqd',
                        ],
                   Class['redis'],
@@ -69,7 +69,7 @@ class marsnat::service  (
   # WATCH only needed for MOUNTAIN (so far)
   service { 'watchpushd':
     ensure    => 'running',
-    subscribe => [File['/etc/tada/watchpushd.conf',
+    subscribe => [File['/etc/mars/watchpushd.conf',
                        '/etc/init.d/watchpushd'
                        ],
                   #Python::Requirements['/opt/dqnat/requirements.txt'],

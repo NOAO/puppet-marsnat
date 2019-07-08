@@ -10,18 +10,18 @@
 ### END INIT INFO
 
 export DJANGO_SETTINGS_MODULE=marssite.settings
-source /etc/tada/dqd.conf
+source /etc/mars/dqd.conf
 
-dir="/var/tada"
+dir="/var/mars"
 #!cmd="/usr/bin/dqsvcpop --loglevel ${dqlevel} --queue ${qname}"
 cmd="/opt/mars/venv/bin/dqsvcpop --loglevel ${dqlevel} --queue submit"
 
 user="devops"
 
 name=dqd
-pid_file="/var/run/tada/$name.pid"
-stdout_log="/var/log/tada/$name.log"
-stderr_log="/var/log/tada/$name.err"
+pid_file="/var/run/mars/$name.pid"
+stdout_log="/var/log/mars/$name.log"
+stderr_log="/var/log/mars/$name.err"
 
 
 get_pid() {

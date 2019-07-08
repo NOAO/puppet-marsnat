@@ -1,4 +1,5 @@
 class marsnat::config (
+
   $secrets        = '/etc/rsyncd.scr',
   $rsyncdscr      = lookup('rsyncdscr', {
     'default_value' => 'puppet:///modules/dmo_hiera/rsyncd.scr'}),
@@ -6,6 +7,7 @@ class marsnat::config (
     'default_value' => 'puppet:///modules/dmo_hiera/rsyncd.conf'}),
   $rsyncpwd       = lookup('rsyncpwd', {
     'default_value' => 'puppet:///modules/dmo_hiera/rsync.pwd'}),
+  $test_user      = lookup('test_user', { 'default_value' => 'vagrant'}),
   $watcher_logging_conf   = lookup('tada_logging_conf', {
     'default_value' => 'puppet:///modules/dmo_hiera/watcher-logging.yaml'}),
   $dqcli_log_conf = lookup('dqcli_logging_conf', {
@@ -21,7 +23,11 @@ class marsnat::config (
   ) {
   notice("Loading marsnat::config; rsyncpwd=${rsyncpwd}")
   
-  file { [ '/etc/tada', '/var/tada']:
+  file { [ '/var/run/mars', '/var/log/mars']:
+    ensure => 'directory',
+    mode   => '0777',
+    } ->
+  file { [ '/etc/mars', '/var/mars']:
     ensure => 'directory',
     owner  => 'devops',
     group  => 'devops',
@@ -39,8 +45,8 @@ class marsnat::config (
           '/var/tada/data/nowatch',
           '/var/tada/data/statusbox']:
     ensure => 'directory',
-    owner  => 'devops',
-    group  => 'devops',
+    owner  => 'tada',
+    group  => 'tada',
     mode   => '0744',
   }
   file { '/var/tada/cache' :
@@ -57,8 +63,8 @@ class marsnat::config (
     ensure  => 'link',
     replace => false,
     target  => '/var/tada/data/dropbox',
-    owner  => 'devops',
-    group  => 'devops',
+    owner  => 'tada',
+    group  => 'tada',
     mode   => '0744',
   }
   file { '/var/tada/nowatch' :
@@ -77,26 +83,6 @@ class marsnat::config (
   file { '/usr/local/bin':
     ensure => 'directory',
   }
-  #!file { '/home/tester/.tada':
-  #!  ensure  => 'directory',
-  #!  owner   => 'tester',
-  #!  group   => 'devops',
-  #!  mode    => '0744',
-  #!}
-  #!file { '/home/tester/.tada/rsync.pwd':
-  #!  ensure  => 'present',
-  #!  replace => false,
-  #!  owner   => 'tester',
-  #!  mode    => '0400',
-  #!  source  => "${rsyncpwd}",
-  #!}
-  #!file { '/home/tester/activate':
-  #!  ensure  => 'present',
-  #!  replace => false,
-  #!  owner   => 'tester',
-  #!  mode    => '0555',
-  #!  content => "source /opt/tada/venv/bin/activate",
-  #!}
   file { ['/var/log/mars/pop.log', '/var/log/mars/pop-detail.log']:
     ensure  => 'present',
     replace => false,
@@ -111,39 +97,6 @@ class marsnat::config (
     group   => 'devops',
     mode    => '0777',
   }
-  #!file {  '/etc/tada/smoke-config.sh':
-  #!  ensure  => 'present',
-  #!  replace => false,
-  #!  source  => "${smoke_conf}",
-  #!  group   => 'root',
-  #!  mode    => '0774',
-  #!}
-  #!file {  '/etc/tada/tada.conf':
-  #!  ensure  => 'present',
-  #!  replace => false,
-  #!  source  => "${tada_conf}",
-  #!  group   => 'root',
-  #!  mode    => '0774',
-  #!}
-#!  file {  '/etc/tada/from-hiera.yaml':
-#!    ensure  => 'present',
-#!    replace => true,
-#!#!dq_host: ${dq_host}
-#!#!dq_port: ${dq_port}
-#!#!valley_host: ${valley_host}
-#!#!test_mtn_host: ${test_mtn_host}
-#!    content => "---
-#!dq_loglevel: ${dq_loglevel}
-#!natica_host: ${natica_host}
-#!natica_port: ${natica_port}
-#!natica_timeout: ${natica_timeout}
-#!tadaversion: ${tadaversion}
-#!dataqversion: ${dataqversion}
-#!marsversion: ${marsversion}
-#!",
-#!    group   => 'root',
-#!    mode    => '0774',
-#!  }
   file {  '/etc/mars/dq-config.json':
     ensure  => 'present',
     replace => true,
@@ -152,40 +105,30 @@ class marsnat::config (
     mode    => '0774',
   }
 
-  file { '/etc/tada/pop.yaml':
+  file { '/etc/mars/pop.yaml':
     ensure  => 'present',
     replace => true,
     source  => "${watcher_logging_conf}",
     mode    => '0774',
   }
-  file { '/etc/tada/dataq_cli_logconf.yaml':
+  file { '/etc/mars/dataq_cli_logconf.yaml':
     ensure  => 'present',
     replace => true,
     source  => "${dqcli_log_conf}",
     mode    => '0774',
   }
-  file { '/etc/tada/watch.yaml':
+  file { '/etc/mars/watch.yaml':
     ensure  => 'present',
     replace => true,
     source  => "${watch_log_conf}",
     mode    => '0774',
   }
-  file { '/var/log/tada/submit.manifest':
+  file { '/var/log/mars/submit.manifest':
     ensure  => 'file',
     replace => true,
     owner   => 'devops',
     mode    => '0766',
   }
-#!  file { '/etc/tada/requirements.txt':
-#!    ensure => 'present',
-#!    replace => true,
-#!    source => 'puppet:///modules/tadanat/requirements.txt',
-#!  }
-#!  file { '/etc/tada/audit-schema.sql':
-#!    ensure => 'present',
-#!    replace => true,
-#!    source => 'puppet:///modules/tadanat/audit-schema.sql',
-#!  }
   file { '/etc/init.d/dqd':
     ensure => 'present',
     replace => true,
@@ -193,7 +136,7 @@ class marsnat::config (
     owner  => 'devops',
     mode   => '0777',
   }
-  file {  '/etc/tada/dqd.conf':
+  file {  '/etc/mars/dqd.conf':
     ensure  => 'present',
     replace => true,
     content => "
@@ -201,7 +144,7 @@ qname=${qname}
 dqlevel=${dq_loglevel}
 ",
   }
-  file {  '/etc/tada/watchpushd.conf':
+  file {  '/etc/mars/watchpushd.conf':
     ensure  => 'present',
     replace => true,
     source  => 'puppet:///modules/marsnat/watchpushd.conf',
@@ -238,12 +181,18 @@ dqlevel=${dq_loglevel}
 
   ##############################################################################
   ### rsync
-  file { '/etc/tada/rsync.pwd':
+  ###
+  # for testing via dropox.  Lets devops@marsnat be client to dropbox.
+  # To allow other user to be client, change owner here or copy file into
+  # test user dir and correct owner and permissions for rsync.pwd there.
+  # Client will use something like:
+  # rsync -az --password-file=~/rsync.pwd ~/dropcache/ tada@marsnat.vagrant.noao.edu::dropbox
+  file { '/etc/mars/rsync.pwd':  
     ensure => 'present',
     replace => true,
     source => "${rsyncpwd}",
     mode   => '0400',
-    owner  => 'devops',
+    owner  => "${test_user}",
   }
   file {  $secrets:
     ensure  => 'present',
