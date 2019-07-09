@@ -14,7 +14,7 @@ source /etc/mars/dqd.conf
 
 dir="/var/mars"
 #!cmd="/usr/bin/dqsvcpop --loglevel ${dqlevel} --queue ${qname}"
-cmd="/opt/mars/venv/bin/dqsvcpop --loglevel ${dqlevel} --queue submit"
+cmd="/opt/mars/venv/bin/dqsvcpop --logconf /etc/mars/pop.yaml --loglevel ${dqlevel} --queue submit"
 
 user="devops"
 
