@@ -108,19 +108,19 @@ class marsnat::config (
     mode    => '0774',
   }
 
-  file { '/etc/mars/pop.yaml':
+  file { '/etc/mars/dq_log_conf.yaml':
     ensure  => 'present',
     replace => true,
     source  => "${dq_log_conf}",
     mode    => '0774',
   }
-  file { '/etc/mars/dataq_cli_logconf.yaml':
+  file { '/etc/mars/dqcli_log_conf.yaml':
     ensure  => 'present',
     replace => true,
     source  => "${dqcli_log_conf}",
     mode    => '0774',
   }
-  file { '/etc/mars/watch.yaml':
+  file { '/etc/mars/watch_log_conf.yaml':
     ensure  => 'present',
     replace => true,
     source  => "${watch_log_conf}",
