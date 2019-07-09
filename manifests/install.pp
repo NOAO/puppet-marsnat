@@ -45,6 +45,17 @@ class marsnat::install (
     password   => '$1$Pk1b6yel$tPE2h9vxYE248CoGKfhR41',  
     system     => true,
   } ->
+  group { 'tada':
+    ensure => 'present',
+  } -> 
+  user { 'tada' :
+    ensure     => 'present',
+    comment    => 'For dropbox handling',
+    managehome => true,
+    password   => '$1$Pk1b6yel$tPE2h9vxYE248CoGKfhR41',  # tada"Password"
+    system     => true,
+    }
+
   user { 'tester' :
     ensure     => 'present',
     comment    => 'For testing NATICA.',
@@ -109,12 +120,12 @@ class marsnat::install (
   file { '/usr/local/bin/fitsverify' :
     ensure  => present,
     replace => "${marsnat_replace}",
-    source  => 'puppet:///modules/tadanat/fitsverify',
+    source  => 'puppet:///modules/marsnat/fitsverify',
   } 
   file { '/usr/local/bin/fitscopy' :
     ensure  => present,
     replace => "${marsnat_replace}",
-    source  => 'puppet:///modules/tadanat/fitscopy',
+    source  => 'puppet:///modules/marsnat/fitscopy',
   }
     
   # just so LOGROTATE doesn't complain if it runs before we rsync

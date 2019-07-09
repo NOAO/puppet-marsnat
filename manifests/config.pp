@@ -27,7 +27,7 @@ class marsnat::config (
     ensure => 'directory',
     mode   => '0777',
     } ->
-  file { [ '/etc/mars', '/var/mars']:
+  file { [ '/etc/mars', '/var/mars', '/var/tada']:
     ensure => 'directory',
     owner  => 'devops',
     group  => 'devops',
