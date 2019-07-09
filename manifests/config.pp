@@ -8,11 +8,14 @@ class marsnat::config (
   $rsyncpwd       = lookup('rsyncpwd', {
     'default_value' => 'puppet:///modules/dmo_hiera/rsync.pwd'}),
   $test_user      = lookup('test_user', { 'default_value' => 'vagrant'}),
-  $watcher_logging_conf   = lookup('tada_logging_conf', {
-    'default_value' => 'puppet:///modules/dmo_hiera/watcher-logging.yaml'}),
-  $dqcli_log_conf = lookup('dqcli_logging_conf', {
-    'default_value' => 'puppet:///modules/dmo_hiera/dqcli-logging.yaml'}),
-  $watch_log_conf = lookup('watch_logging_conf'),
+
+  $dq_log_conf   = lookup('dq_log_conf', {
+    'default_value' => 'puppet:///modules/dmo_hiera/natica-dq-logging.yaml'}),
+  $dqcli_log_conf = lookup('dqcli_log_conf', {
+    'default_value' => 'puppet:///modules/dmo_hiera/natica-dqcli-logging.yaml'}),
+  $watch_log_conf = lookup('watch_log_conf', {
+    'default_value' => 'puppet:///modules/dmo_hiera/natica-watch-logging.yaml'}),
+
   $dq_conf     = lookup('dq_conf', {
     'default_value' => 'puppet:///modules/dmo_hiera/dq-config.json'}),
   $dq_loglevel    = lookup('dq_loglevel', {'default_value' => 'DEBUG'}),
@@ -108,7 +111,7 @@ class marsnat::config (
   file { '/etc/mars/pop.yaml':
     ensure  => 'present',
     replace => true,
-    source  => "${watcher_logging_conf}",
+    source  => "${dq_log_conf}",
     mode    => '0774',
   }
   file { '/etc/mars/dataq_cli_logconf.yaml':
