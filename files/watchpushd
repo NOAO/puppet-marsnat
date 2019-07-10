@@ -13,7 +13,7 @@ source /etc/mars/watchpushd.conf
 dir="/var/mars"
 #!cmd="/usr/bin/watch_drops --loglevel ${loglevel}"
 #!!cmd="/opt/tada/venv/bin/watch_drops --loglevel ${loglevel}"
-cmd="/opt/mars/venv/bin/watch_drops --loglevel ${loglevel}"
+cmd="/opt/mars/venv/bin/watch_drops --logconf /etc/mars/watch_log_conf.yaml --loglevel ${loglevel}"
 user="devops"
 
 name=watchpushd
