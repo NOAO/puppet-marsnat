@@ -41,14 +41,6 @@ class marsnat::install (
   ensure_resource('package', ['git', ], {'ensure' => 'present'})
   package{ ['epel-release', 'jemalloc', 'ganglia', 'nginx', 'xinetd'] : }
 
-  user { 'devops' :
-    ensure     => 'present',
-    comment    => 'For python virtualenv and running mars.',
-    managehome => true,
-    # tadapassword/xxxx_||.x.
-    password   => '$1$Pk1b6yel$tPE2h9vxYE248CoGKfhR41',  
-    system     => true,
-  } ->
   group { 'tada':
     ensure => 'present',
   } -> 
@@ -58,7 +50,16 @@ class marsnat::install (
     managehome => true,
     password   => '$1$Pk1b6yel$tPE2h9vxYE248CoGKfhR41',  # tada"Password"
     system     => true,
-    }
+    } ->
+  user { 'devops' :
+    ensure     => 'present',
+    comment    => 'For python virtualenv and running mars.',
+    managehome => true,
+    # tadapassword/xxxx_||.x.
+    password   => '$1$Pk1b6yel$tPE2h9vxYE248CoGKfhR41',  
+    system     => true,
+    groups     => ['tada',],
+  } ->
 
   user { 'tester' :
     ensure     => 'present',

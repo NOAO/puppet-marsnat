@@ -57,7 +57,7 @@ class marsnat::config (
     ensure => 'directory',
     owner  => 'tada',
     group  => 'tada',
-    mode   => '0744',
+    mode   => '0774',
   }
   file { '/var/tada/cache' :
     ensure  => 'link',
@@ -75,7 +75,7 @@ class marsnat::config (
     target  => '/var/tada/data/dropbox',
     owner  => 'tada',
     group  => 'tada',
-    mode   => '0744',
+    mode   => '0774',
   }
   file { '/var/tada/nowatch' :
     ensure  => 'link',
