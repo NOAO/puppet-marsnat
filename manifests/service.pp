@@ -2,7 +2,13 @@ class marsnat::service  (
   $djangoserver = lookup('djangoserver',  {
     'default_value' => '/opt/mars/start-mars-production.sh'}),
   ) {
-  notify{ "Loading marsnat::service.pp; ${djangoserver}": } # output to puppet client
+  notify{'service':
+    message => @("EOT")
+    Loading marsnat::service.pp
+      djangoserver=${djangoserver}
+    | EOT
+  }
+
   exec { 'collect status':
     command => "/bin/bash -c 'source /opt/mars/venv/bin/activate; /opt/mars/marssite/manage.py collectstatic'",
     creates => '/opt/mars/marssite/audit/static/audit/screen.css',

@@ -11,6 +11,7 @@
 
 export DJANGO_SETTINGS_MODULE=marssite.settings
 source /etc/mars/dqd.conf
+source /opt/mars/venv/bin/activate
 
 dir="/var/mars"
 #!cmd="/usr/bin/dqsvcpop --loglevel ${dqlevel} --queue ${qname}"

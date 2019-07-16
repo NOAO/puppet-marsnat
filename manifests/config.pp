@@ -36,6 +36,13 @@ class marsnat::config (
     group  => 'devops',
     mode   => '0774',
   }
+  file { '/var/mars/archive':
+    ensure => 'directory',
+    owner  => 'devops',
+    group  => 'devops',
+    mode   => '0774',
+  }
+
   file { '/var/tada/data':
     ensure => 'directory',
     owner  => 'devops',

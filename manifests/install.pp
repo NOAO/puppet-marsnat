@@ -1,9 +1,7 @@
 class marsnat::install (
   $marsnatversion = lookup('marsnatversion'),
-  $dqnatversion = lookup('dqnatversion', {
-    'default_value' => 'master'}),
-  $personalityversion = lookup('personalityversion', {
-    'default_value' => 'master'}),
+  $dqnatversion = lookup('dqnatversion', {'default_value' => 'master'}),
+  $personalityversion = lookup('personalityversion', {'default_value' => 'master'}),
 
   $fpacktgz    = lookup('fpacktgz', {
     'default_value' => 'puppet:///modules/marsnat/fpack-bin-centos-6.6.tgz'}),
@@ -15,8 +13,7 @@ class marsnat::install (
     'default_value' => 'puppet:///modules/dmo_hiera/spdev1.id_dsa.pub'}),
   $marsnat_privkey = lookup('mars_privkey', {
     'default_value' => 'puppet:///modules/dmo_hiera/spdev1.id_dsa'}),
-  $test_mtn_host= lookup('test_mtn_host'),
-  $test_val_host= lookup('test_val_host'),
+  $redis_port = lookup('redis_port', {'default_value' => '6379'}),
   $marsnat_replace = lookup('marsnat_replace', {'default_value' => true }),
   #!dq_host: ${lookup('dq_host')}
   #!dq_port: ${lookup('dq_port')}
@@ -29,8 +26,15 @@ class marsnat::install (
   #!dataqversion: ${lookup('dataqversion')}
   #!marsversion: ${lookup('marsversion')}
   ) {
-  notify{"Loading marsnat::install.pp; marsnatversion=${marsnatversion}":}
-  notify{"marsnat::install.pp; rsyncpwd=${rsyncpwd}":}
+  notify{ 'install versions':
+    message => @("EOT")
+    Loading marsnat::install.pp
+      marsnatversion     = ${marsnatversion}
+      dqnatversion       = ${dqnatversion}
+      personalityversion = ${personalityversion}
+    | EOT
+  }
+  #  notify{"marsnat::install.pp; rsyncpwd=${rsyncpwd}":}
 
   #include git
   #!include augeas
@@ -68,20 +72,33 @@ class marsnat::install (
 
   # Install dataq from source in /opt/dqnat
   vcsrepo { '/opt/dqnat' :
-    ensure   => latest,
+    revision => "${dqnatversion}",
+    ensure   => 'latest',
     provider => git,
     source   => 'https://github.com/NOAO/dqnat.git',
-    revision => "${dqnatversion}",
     owner    => 'devops',
     group    => 'devops',
     require  => User['devops'],
     notify   => Exec['install dataq'],
-    } ->
+    } 
+  python::requirements  { '/opt/dqnat/requirements.txt':
+    virtualenv   => '/opt/mars/venv',
+    pip_provider => 'pip3',
+    owner        => 'devops',
+    group        => 'devops',
+    forceupdate  => true,
+    require      => [ User['devops'], Vcsrepo['/opt/dqnat']],
+  } 
+
   file { '/etc/mars/dq-mars-install.sh' :
-    ensure  => present,
+    ensure  => 'file',
+    mode    => 'ug=rwx',
+    owner        => 'devops',
+    group        => 'devops',
     replace => "${marsnat_replace}",
     source  => 'puppet:///modules/marsnat/dq-mars-install.sh',
-  } ->
+    notify   => Exec['install dataq'],
+  } 
   exec { 'install dataq':
     cwd     => '/opt/dqnat',
     command => "/bin/bash -c  /etc/mars/dq-mars-install.sh",
@@ -89,10 +106,11 @@ class marsnat::install (
     logoutput    => true,
     notify  => [Service['watchpushd'], Service['dqd'], ],
     subscribe => [
-      Vcsrepo['/opt/dqnat'], 
-      File['/opt/mars/venv',
-           #'/etc/mars/from-hiera.yaml',
-      ],
+                  Vcsrepo['/opt/dqnat'], 
+                  File['/opt/mars/venv',
+                       '/etc/mars/dq-mars-install.sh'
+                       #'/etc/mars/from-hiera.yaml',
+                       ],
       #Python::Requirements['/opt/dqnat/requirements.txt'],
     ],
   } 
@@ -107,7 +125,7 @@ class marsnat::install (
     } 
 
   file { '/usr/local/share/applications/fpack.tgz':
-    ensure => 'present',
+    ensure => 'file',
     replace => "${marsnat_replace}",
     source => "$fpacktgz",
     notify => Exec['unpack fpack'],
@@ -118,19 +136,19 @@ class marsnat::install (
     refreshonly => true,
   } 
   file { '/usr/local/bin/fitsverify' :
-    ensure  => present,
+    ensure  => 'file',
     replace => "${marsnat_replace}",
     source  => 'puppet:///modules/marsnat/fitsverify',
   } 
   file { '/usr/local/bin/fitscopy' :
-    ensure  => present,
+    ensure  => 'file',
     replace => "${marsnat_replace}",
     source  => 'puppet:///modules/marsnat/fitscopy',
   }
     
   # just so LOGROTATE doesn't complain if it runs before we rsync
   file { '/var/log/rsyncd.log' :
-    ensure  => present,
+    ensure  => 'file',
     replace => "${marsnat_replace}",
   }
 
@@ -142,8 +160,7 @@ class marsnat::install (
 # For NATICA from hiera
 marsnatversion: '${marsnatversion}'
 archive_topdir: '${archive_topdir}'
-test_mtn_host: '${test_mtn_host}'
-test_val_host: '${test_val_host}'
+redis_port: '${redis_port}'
 ",
     group   => 'root',
     mode    => '0774',
@@ -187,7 +204,8 @@ test_val_host: '${test_val_host}'
     owner    => 'devops',
     group    => 'devops',
     require  => User['devops'],
-    notify   => Exec['start mars'],
+    #notify   => [Exec['install mars'], Exec['start mars']],
+    notify   => [Exec['start mars']],
     } ->
   vcsrepo { '/opt/personality' :
     ensure   => latest,
