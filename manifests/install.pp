@@ -15,6 +15,9 @@ class marsnat::install (
     'default_value' => 'puppet:///modules/dmo_hiera/spdev1.id_dsa'}),
   $redis_port = lookup('redis_port', {'default_value' => '6379'}),
   $marsnat_replace = lookup('marsnat_replace', {'default_value' => true }),
+  $localdjango = lookup('localdjango', {
+    'default_value' => 'puppet:///modules/dmo_hiera/django_settings_local_natica.py' }),
+
   #!dq_host: ${lookup('dq_host')}
   #!dq_port: ${lookup('dq_port')}
   #!dq_loglevel: ${lookup('dq_loglevel')}
@@ -170,7 +173,7 @@ redis_port: '${redis_port}'
   file { '/etc/mars/django_local_settings.py':
     ensure  => 'file',
     replace => false,
-    source  => lookup('localnatica'),
+    source  => "${localdjango}",
   } 
 
   yumrepo { 'ius':
