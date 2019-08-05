@@ -26,7 +26,7 @@ class marsnat::config (
   ) {
   notice("Loading marsnat::config; rsyncpwd=${rsyncpwd}")
   
-  file { [ '/var/run/mars', '/var/log/mars]:
+  file { [ '/var/run/mars', '/var/log/mars']:
     ensure => 'directory',
     mode   => '0777',
     } ->
