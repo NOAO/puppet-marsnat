@@ -155,7 +155,7 @@ class marsnat::install (
 
 
   file {  '/etc/mars/hiera_settings.yaml': 
-    ensure  => 'present',
+    ensure  => 'file',
     replace => "${marsnat_replace}",
     content => "---
 # For NATICA from hiera
@@ -168,7 +168,8 @@ redis_port: '${redis_port}'
   }
   
   file { '/etc/mars/django_local_settings.py':
-    replace => "${marsnat_replace}",
+    ensure  => 'file',
+    replace => false,
     source  => lookup('localnatica'),
   } 
 
