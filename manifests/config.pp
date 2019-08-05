@@ -7,7 +7,7 @@ class marsnat::config (
     'default_value' => 'puppet:///modules/dmo_hiera/rsyncd.conf'}),
   $rsyncpwd       = lookup('rsyncpwd', {
     'default_value' => 'puppet:///modules/dmo_hiera/rsync.pwd'}),
-  $test_user      = lookup('test_user', { 'default_value' => 'vagrant'}),
+  $test_user      = lookup('test_user', { 'default_value' => 'devops'}),
 
   $dq_log_conf   = lookup('dq_log_conf', {
     'default_value' => 'puppet:///modules/dmo_hiera/natica-dq-logging.yaml'}),
@@ -26,7 +26,7 @@ class marsnat::config (
   ) {
   notice("Loading marsnat::config; rsyncpwd=${rsyncpwd}")
   
-  file { [ '/var/run/mars', '/var/log/mars']:
+  file { [ '/var/run/mars', '/var/log/mars]:
     ensure => 'directory',
     mode   => '0777',
     } ->
