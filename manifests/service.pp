@@ -54,6 +54,7 @@ class marsnat::service  (
 
   exec { 'start nginx':
     command => '/bin/bash -c supervisord -c /etc/supervisord.conf',
+    unless => ['/usr/bin/test -f /run/supervisord.pid'],
   }
 
 

@@ -1,0 +1,77 @@
+# Things that might need changing
+# - port 8080 not needed in production
+# - place SSL certs in /etc/ssl/certs 
+# - server_name - default_server is less secure but used to access within VM as localhost, dev.local etc
+# - logging
+# - static file locations
+
+upstream app_server {
+  server unix:/opt/mars/gunicorn.sock fail_timeout=0;
+}
+
+# configuration of the server
+server {
+    # the port your site will be served on, default_server indicates that this server block
+    # is the block to use if no blocks match the server_name
+    listen 80;
+    #! listen 8080;
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    ssl_certificate /etc/ssl/certs/__dm_noao_edu.crt;
+    ssl_certificate_key /etc/ssl/certs/star-dm-noao-edu.key;
+
+    # the domain name it will serve for
+    server_name marsnat1.pat.dm.noao.edu #default_server # can use machine's IP or FQDN
+
+    # the domain name it will serve for
+    #server_name .dm.noao.edu; # substitute your machine's IP address or FQDN
+    charset     utf-8;
+
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+
+
+    # max upload size
+    client_max_body_size 75M;   # adjust to taste
+
+    # Django media
+    location /media  {
+        alias /opt/mars/marssite/static;  # your Django project's media files - amend as required
+    }
+
+    location /static {
+        alias /opt/mars/marssite/static; # your Django project's static files - amend as required
+    }
+
+    location /download/zip {
+        alias /srv/ftp;
+    }
+
+    location /download/archive {
+        alias /srv/ftp/Volumes/archive;
+    }
+
+    # Finally, send all non-media requests to the Django server.
+    #location / {
+    #    uwsgi_pass  django;
+    #    include     /etc/nginx/uwsgi_params; # the uwsgi_params file you installed
+    #    uwsgi_modifier1 30;
+    #}
+
+    location / {
+      # checks for static file, if not found proxy to app
+      try_files $uri @proxy_to_app;
+    }
+
+    location @proxy_to_app {
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header Host $http_host;
+      # we don't want nginx trying to do something clever with
+      # redirects, we set the Host: header above already.
+      proxy_redirect off;
+      proxy_pass http://app_server;
+    }
+
+}
