@@ -50,6 +50,10 @@ class marsnat::service  (
       File['/opt/mars/venv', '/etc/mars/hiera_settings.yaml'],
       Python::Requirements['/opt/mars/requirements.txt'],
       ],
+  } 
+
+  exec { 'start nginx':
+    command => '/bin/bash -c supervisord -c /etc/supervisord.conf',
   }
 
 
@@ -57,7 +61,7 @@ class marsnat::service  (
     #   unless  => '/usr/bin/pgrep -f "manage.py runserver"',
     # to prevent running duplicate.  Puppet is supposed to check process table
     # so duplicate should never happen UNLESS done manually.
-  service { 'dqd':
+  service {'dqd':
     ensure   => 'running',
     subscribe => [File[#'/etc/mars/dqd.conf',
                        #'/etc/mars/from-hiera.yaml',

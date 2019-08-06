@@ -42,7 +42,9 @@ class marsnat::install (
   #include git
   #!include augeas
   ensure_resource('package', ['git', ], {'ensure' => 'present'})
-  package{ ['epel-release', 'jemalloc', 'ganglia', 'nginx', 'xinetd'] : }
+  package{ ['epel-release', 'jemalloc', 'ganglia',
+            'nginx', 'supervisor',
+            'xinetd'] : }
 
   group { 'tada':
     ensure => 'present',
@@ -271,11 +273,13 @@ redis_port: '${redis_port}'
     } ->
   file { '/etc/nginx/sites-enabled/default' :
     ensure  => 'present',      
-    source  => 'puppet:///modules/marsnat/nginx-app.conf',
+    replace => true,
+    source  => 'puppet:///modules/marsnat/nginx/sites-enabled/default',
     } ->
   file { '/etc/nginx/nginx.conf' :
     ensure  => 'present',      
-    source  => 'puppet:///modules/marsnat/nginx.conf',
+    replace => true,
+    source  => 'puppet:///modules/marsnat/nginx/nginx.conf',
     } ->
   file { '/etc/nginx/uwsgi.ini' :
     ensure  => 'present',      
@@ -284,6 +288,20 @@ redis_port: '${redis_port}'
   file { '/etc/nginx/uwsgi_params' :
     ensure  => 'present',      
     source  => 'puppet:///modules/marsnat/uwsgi_params',
-    } 
-
+  } 
+  file { '/etc/supervisord.d' :
+    ensure => 'directory',
+  }
+  file { '/etc/supervisord.d/supervisor-app.conf' :
+    ensure  => 'file',
+    source  => 'puppet:///modules/marsnat/nginx/supervisor-app.conf',
+  }
+  file { '/etc/supervisord.conf' :
+    ensure  => 'file',
+    source  => 'puppet:///modules/marsnat/nginx/supervisord.conf',
+  }
+  file { '/etc/gunicorn-conf.py' :
+    ensure  => 'file',
+    source  => 'puppet:///modules/marsnat/nginx/gunicorn-conf.py',
+  }
 }
