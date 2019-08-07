@@ -9,11 +9,14 @@ class marsnat::service  (
     | EOT
   }
 
-  exec { 'collect status':
+  #./manage.py collectstatic --noinput 
+  exec { 'collect static':
     command => "/bin/bash -c 'source /opt/mars/venv/bin/activate; /opt/mars/marssite/manage.py collectstatic'",
-    creates => '/opt/mars/marssite/audit/static/audit/screen.css',
+    #creates => '/opt/mars/marssite/audit/static/audit/screen.css',
+    refreshonly => true,
     subscribe => [
-      Vcsrepo['/opt/mars'], 
+      Vcsrepo['/opt/mars'],
+      Exec[ 'start mars'],
       File['/opt/mars/venv'],
       Python::Requirements['/opt/mars/requirements.txt'],
       ],
@@ -40,6 +43,7 @@ class marsnat::service  (
 #!    command => "/etc/patch.sh > /etc/patch.log",
 #!    creates => "/etc/patch.log",
 #!    } ->
+
   exec { 'start mars':
     cwd     => '/opt/mars',
     command => "/bin/bash -c ${djangoserver}",
