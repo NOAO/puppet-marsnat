@@ -8,21 +8,26 @@
 upstream app_server {
   server unix:/opt/mars/gunicorn.sock fail_timeout=0;
 }
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+    return 301 https://$host$request_uri;
+}
 
 # configuration of the server
 server {
     # the port your site will be served on, default_server indicates that this server block
     # is the block to use if no blocks match the server_name
-    listen 80;
     #! listen 8080;
     listen 443 ssl;
     listen [::]:443 ssl;
 
-    ssl_certificate /etc/ssl/certs/__dm_noao_edu.crt;
-    ssl_certificate_key /etc/ssl/certs/star-dm-noao-edu.key;
+    ssl_certificate /etc/ssl/certs/__pat_dm_noao_edu/__pat_dm_noao_edu.crt;
+    ssl_certificate_key /etc/ssl/certs/__pat_dm_noao_edu/star-pat-dm-noao-edu.key;
 
     # the domain name it will serve for
-    server_name marsnat1.pat.dm.noao.edu #default_server # can use machine's IP or FQDN
+    server_name default_server # can use machine's IP or FQDN
 
     # the domain name it will serve for
     #server_name .dm.noao.edu; # substitute your machine's IP address or FQDN
