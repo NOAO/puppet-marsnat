@@ -11,7 +11,7 @@ class marsnat::service  (
 
   #./manage.py collectstatic --noinput 
   exec { 'collect static':
-    command => "/bin/bash -c 'source /opt/mars/venv/bin/activate; /opt/mars/marssite/manage.py collectstatic'",
+    command => "/bin/bash -c 'source /opt/mars/venv/bin/activate; /opt/mars/marssite/manage.py collectstatic --noinput'",
     #creates => '/opt/mars/marssite/audit/static/audit/screen.css',
     refreshonly => true,
     subscribe => [
