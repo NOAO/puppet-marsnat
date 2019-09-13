@@ -1,14 +1,13 @@
 class marsnat::install (
   $marsnatversion = lookup('marsnatversion'),
-  $dqnatversion = lookup('dqnatversion', {'default_value' => 'master'}),
-  $personalityversion = lookup('personalityversion', {'default_value' => 'master'}),
+  $dqnatversion = lookup('dqnatversion'),
+  $personalityversion = lookup('personalityversion'),
+  $archive_topdir  = lookup('archive_topdir'),
 
   $fpacktgz    = lookup('fpacktgz', {
     'default_value' => 'puppet:///modules/marsnat/fpack-bin-centos-6.6.tgz'}),
   $rsyncpwd      = lookup('rsyncpwd',  {
     'default_value' => 'puppet:///modules/dmo_hiera/rsync.pwd'}),
-  $archive_topdir  = lookup('archive_topdir', {
-    'default_value' => '/archive_data'}),
   $marsnat_pubkey = lookup('mars_pubkey', {
     'default_value' => 'puppet:///modules/dmo_hiera/spdev1.id_dsa.pub'}),
   $marsnat_privkey = lookup('mars_privkey', {
@@ -18,16 +17,6 @@ class marsnat::install (
   $localdjango = lookup('localdjango', {
     'default_value' => 'puppet:///modules/dmo_hiera/django_settings_local_natica.py' }),
 
-  #!dq_host: ${lookup('dq_host')}
-  #!dq_port: ${lookup('dq_port')}
-  #!dq_loglevel: ${lookup('dq_loglevel')}
-  #!natica_host: ${lookup('natica_host')}
-  #!valley_host: ${lookup('valley_host')}
-  #!mars_host: ${lookup('mars_host')}
-  #!mars_port: ${lookup('mars_port')}
-  #!tadaversion: ${lookup('tadaversion')}
-  #!dataqversion: ${lookup('dataqversion')}
-  #!marsversion: ${lookup('marsversion')}
   ) {
   notify{ 'install versions':
     message => @("EOT")
@@ -122,12 +111,12 @@ class marsnat::install (
   } 
   
   class { '::redis':
-      protected_mode => 'no',
-      #! bind => undef,  # Will cause DEFAULT (127.0.0.1) value to be used
-      #! bind => '172.16.1.21', # @@@ mtnnat
-      #! bind => '127.0.0.1 172.16.1.21', # listen to Local and mtnnat.vagrant
-      #! bind => '0.0.0.0', # @@@ Listen to ALL interfaces
-    bind => '127.0.0.1', # listen to Local 
+    protected_mode => 'no',
+    #! bind => undef,  # Will cause DEFAULT (127.0.0.1) value to be used
+    #! bind => '172.16.1.21', # @@@ mtnnat
+    #! bind => '127.0.0.1 172.16.1.21', # listen to Local and mtnnat.vagrant
+    #! bind => '0.0.0.0', # @@@ Listen to ALL interfaces
+    #bind => "${fqdn}", # listen to Local 
     } 
 
   file { '/usr/local/share/applications/fpack.tgz':
