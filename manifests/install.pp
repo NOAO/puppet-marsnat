@@ -3,6 +3,9 @@ class marsnat::install (
   $dqnatversion = lookup('dqnatversion'),
   $personalityversion = lookup('personalityversion'),
   $archive_topdir  = lookup('archive_topdir'),
+  $localnatica = lookup('localnatica', {
+    'default_value' => 'puppet:///modules/dmo_hiera/django_settings_local_natica.py' }),
+
 
   $fpacktgz    = lookup('fpacktgz', {
     'default_value' => 'puppet:///modules/marsnat/fpack-bin-centos-6.6.tgz'}),
@@ -14,8 +17,6 @@ class marsnat::install (
     'default_value' => 'puppet:///modules/dmo_hiera/spdev1.id_dsa'}),
   $redis_port = lookup('redis_port', {'default_value' => '6379'}),
   $marsnat_replace = lookup('marsnat_replace', {'default_value' => true }),
-  $localdjango = lookup('localdjango', {
-    'default_value' => 'puppet:///modules/dmo_hiera/django_settings_local_natica.py' }),
 
   ) {
   notify{ 'install versions':
@@ -24,6 +25,9 @@ class marsnat::install (
       marsnatversion     = ${marsnatversion}
       dqnatversion       = ${dqnatversion}
       personalityversion = ${personalityversion}
+
+      archive_topdir     = ${archive_topdir}
+      localnatica        = ${localnatica}
     | EOT
   }
   #  notify{"marsnat::install.pp; rsyncpwd=${rsyncpwd}":}
@@ -164,7 +168,7 @@ redis_port: '${redis_port}'
   file { '/etc/mars/django_local_settings.py':
     ensure  => 'file',
     replace => false,
-    source  => "${localdjango}",
+    source  => "${localnatica}",
   } 
 
   yumrepo { 'ius':

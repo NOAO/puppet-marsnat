@@ -1,6 +1,6 @@
 class marsnat::config (
-
   $secrets        = '/etc/rsyncd.scr',
+
   $rsyncdscr      = lookup('rsyncdscr', {
     'default_value' => 'puppet:///modules/dmo_hiera/rsyncd.scr'}),
   $rsyncdconf     = lookup('rsyncdconf', {
@@ -166,14 +166,6 @@ dqlevel=${dq_loglevel}
     owner   => 'devops',
     mode    => '0777',
   }
-#!  # Not sure if firewall mods needed for dqsvcpop???
-#!  firewall { '000 allow dqsvcpop':
-#!    chain   => 'INPUT',
-#!    state   => ['NEW'],
-#!    dport   => '6379',
-#!    proto   => 'tcp',
-#!    action  => 'accept',
-#!  }
 
   file_line { 'config_inotify_instances':
     ensure => present,
@@ -218,21 +210,6 @@ dqlevel=${dq_loglevel}
     owner   => 'root',
     mode    => '0400',
   }
-  #!class { 'firewall': } ->
-  #!firewall { '999 disable firewall':
-  #!  ensure => 'stopped',
-  #!}
-  #!class { selinux:
-  #!  mode => 'permissive',
-  #!}
-#!  class { 'firewall': } ->
-#!  firewall { '000 allow rsync':
-#!    chain   => 'INPUT',
-#!    state   => ['NEW'],
-#!    dport   => '873',
-#!    proto   => 'tcp',
-#!    action  => 'accept',
-  #!  }
 
   file { '/home/tester/.ssh/':
     ensure => 'directory',
