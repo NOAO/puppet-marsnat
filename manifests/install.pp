@@ -118,9 +118,9 @@ class marsnat::install (
     protected_mode => 'no',
     #! bind => undef,  # Will cause DEFAULT (127.0.0.1) value to be used
     #! bind => '172.16.1.21', # @@@ mtnnat
-    #! bind => '127.0.0.1 172.16.1.21', # listen to Local and mtnnat.vagrant
     #! bind => '0.0.0.0', # @@@ Listen to ALL interfaces
-    bind => "${ipaddress}", # listen to Local 
+    #bind => "${ipaddress}", # listen to Local 
+    bind => undef,
     } 
 
   file { '/usr/local/share/applications/fpack.tgz':
