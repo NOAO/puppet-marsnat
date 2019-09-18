@@ -14,6 +14,7 @@ class marsnat::service  (
     command => "/bin/bash -c 'source /opt/mars/venv/bin/activate; /opt/mars/marssite/manage.py collectstatic --noinput'",
     #creates => '/opt/mars/marssite/audit/static/audit/screen.css',
     refreshonly => true,
+    cwd       => '/opt/mars/marssite',
     subscribe => [
       Vcsrepo['/opt/mars'],
       Exec[ 'start mars'],
