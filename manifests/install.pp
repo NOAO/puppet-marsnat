@@ -6,6 +6,8 @@ class marsnat::install (
   $localnatica = lookup('localnatica', {
     'default_value' => 'puppet:///modules/dmo_hiera/django_settings_local_natica.py' }),
 
+  $ssl_domain_crt = lookup('ssl_domain_crt'),
+  $ssl_domain_key = lookup('ssl_domain_key'),
 
   $fpacktgz    = lookup('fpacktgz', {
     'default_value' => 'puppet:///modules/marsnat/fpack-bin-centos-6.6.tgz'}),
