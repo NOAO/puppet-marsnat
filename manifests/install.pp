@@ -259,6 +259,16 @@ redis_port: '${redis_port}'
     source  => 'puppet:///modules/marsnat/mars.logrotate',
   }
   
+  file { '/etc/ssl/certs/domain.crt' :
+    ensure  => 'present',      
+    replace => true,
+    content  => "${ssl_domain_crt}",
+    }
+  file { '/etc/ssl/certs/domain.key' :
+    ensure  => 'present',      
+    replace => true,
+    content  => "${ssl_domain_key}",
+    }
 
   file { [ '/etc/nginx', '/etc/nginx/sites-enabled']:
     ensure => 'directory',
