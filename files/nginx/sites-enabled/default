@@ -64,6 +64,18 @@ server {
     #    uwsgi_modifier1 30;
     #}
 
+    location /ops {
+      # allow anyone in 192.168.1.0/24
+      allow   127.0.0.0/8; #localhost
+      allow   172.18.0.0/16; #docker containers
+      allow   140.252.0.0/16; #NOAO intranet
+      # drop rest of the world 
+      deny    all;
+      try_files $uri @proxy_to_app;
+    }
+
+
+
     location / {
       # checks for static file, if not found proxy to app
       try_files $uri @proxy_to_app;
