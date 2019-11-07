@@ -275,21 +275,21 @@ redis_port: '${redis_port}'
   file { [ '/etc/nginx', '/etc/nginx/sites-enabled']:
     ensure => 'directory',
     mode   => '0777',
-    } ->
+    } 
   file { '/etc/nginx/sites-enabled/default' :
     ensure  => 'present',      
     replace => true,
     source  => 'puppet:///modules/marsnat/nginx/sites-enabled/default',
-    } ->
+    } 
   file { '/etc/nginx/nginx.conf' :
     ensure  => 'present',      
     replace => true,
     source  => 'puppet:///modules/marsnat/nginx/nginx.conf',
-    } ->
+    } 
   file { '/etc/nginx/uwsgi.ini' :
     ensure  => 'present',      
     source  => 'puppet:///modules/marsnat/uwsgi.ini',
-    } ->
+    } 
   file { '/etc/nginx/uwsgi_params' :
     ensure  => 'present',      
     source  => 'puppet:///modules/marsnat/uwsgi_params',
@@ -309,4 +309,6 @@ redis_port: '${redis_port}'
     ensure  => 'file',
     source  => 'puppet:///modules/marsnat/nginx/gunicorn-conf.py',
   }
+  # BOUNCE: supervisorctl restart nginx
+  # BOUNCE: supervisorctl restart gunicorn
 }
