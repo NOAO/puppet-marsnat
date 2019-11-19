@@ -1,5 +1,5 @@
 import os
-os.environ['ES_INDEX'] = 'marsnat2'
+os.environ['ES_INDEX'] = 'portal'
 workers = 4
 bind = 'unix:/opt/mars/gunicorn.sock'
 daemon = False
