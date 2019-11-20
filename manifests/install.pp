@@ -135,16 +135,31 @@ class marsnat::install (
     command     => '/bin/tar -xf /usr/local/share/applications/fpack.tgz',
     cwd         => '/usr/local/bin',
     refreshonly => true,
-  } 
+  } ->
+  file { '/usr/local/bin/fpack' :
+    ensure  => 'file',  
+    mode    => 'a=rx',
+    owner   => 'root',
+    } -> 
+  file { '/usr/local/bin/funpack' :
+    ensure  => 'file',  
+    mode    => 'a=rx',
+    owner   => 'root',
+    } 
+
   file { '/usr/local/bin/fitsverify' :
     ensure  => 'file',
     replace => "${marsnat_replace}",
     source  => 'puppet:///modules/marsnat/fitsverify',
+    mode    => 'a=rx',
+    owner        => 'root',
   } 
   file { '/usr/local/bin/fitscopy' :
     ensure  => 'file',
     replace => "${marsnat_replace}",
     source  => 'puppet:///modules/marsnat/fitscopy',
+    mode    => 'a=rx',
+    owner        => 'root',
   }
     
   # just so LOGROTATE doesn't complain if it runs before we rsync
