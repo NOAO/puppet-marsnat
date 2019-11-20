@@ -141,12 +141,14 @@ class marsnat::install (
     mode    => 'a=rx',
     owner   => 'root',
     group   => 'root',
+    replace => true,
     } -> 
   file { '/usr/local/bin/funpack' :
     ensure  => 'file',  
     mode    => 'a=rx',
     owner   => 'root',
     group   => 'root',
+    replace => true,
     } 
 
   file { '/usr/local/bin/fitsverify' :
@@ -156,6 +158,7 @@ class marsnat::install (
     mode    => 'a=rx',
     owner        => 'root',
     group   => 'root',
+    replace => true,
   } 
   file { '/usr/local/bin/fitscopy' :
     ensure  => 'file',
@@ -164,6 +167,7 @@ class marsnat::install (
     mode    => 'a=rx',
     owner        => 'root',
     group   => 'root',
+    replace => true,
   }
     
   # just so LOGROTATE doesn't complain if it runs before we rsync
