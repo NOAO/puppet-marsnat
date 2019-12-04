@@ -8,6 +8,7 @@ class marsnat::install (
 
   $ssl_domain_crt = lookup('ssl_domain_crt'),
   $ssl_domain_key = lookup('ssl_domain_key'),
+  $guconf = lookup('guconf'),
 
   $fpacktgz    = lookup('fpacktgz', {
     'default_value' => 'puppet:///modules/marsnat/fpack-bin-centos-6.6.tgz'}),
@@ -328,7 +329,7 @@ redis_port: '${redis_port}'
   }
   file { '/etc/gunicorn-conf.py' :
     ensure  => 'file',
-    source  => 'puppet:///modules/marsnat/nginx/gunicorn-conf.py',
+    source  => "${guconf}" #'puppet:///modules/marsnat/nginx/gunicorn-conf.py',
   }
   # BOUNCE: supervisorctl restart nginx
   # BOUNCE: supervisorctl restart gunicorn
