@@ -191,7 +191,7 @@ redis_port: '${redis_port}'
   
   file { '/etc/mars/django_local_settings.py':
     ensure  => 'file',
-    replace => false,
+    replace => true,
     source  => "${localnatica}",
   } 
 
