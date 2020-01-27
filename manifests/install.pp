@@ -221,9 +221,9 @@ redis_port: '${redis_port}'
   vcsrepo { '/opt/mars' :
     ensure   => latest,
     provider => git,
-    #source   => 'git@github.com:NOAO/marsnat.git',
+    source   => 'git@github.com:NOAO/marsnat.git',
     # for https  to work: yum update -y nss curl libcurl
-    source   => 'https://github.com/NOAO/marsnat.git',
+    #source   => 'https://github.com/NOAO/marsnat.git',
     revision => "${marsnatversion}",
     owner    => 'devops',
     group    => 'devops',
