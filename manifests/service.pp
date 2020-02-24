@@ -55,7 +55,11 @@ class marsnat::service  (
       File['/opt/mars/venv', '/etc/mars/hiera_settings.yaml'],
       Python::Requirements['/opt/mars/requirements.txt'],
       ],
-  } 
+  } ->
+  exec { 'bounce gunicorn':
+    command => '/bin/bash -c supervisorctl restart gunicorn',
+    refreshonly => true,
+    }
 
   exec { 'start nginx':
     command => '/bin/bash -c supervisord -c /etc/supervisord.conf',
