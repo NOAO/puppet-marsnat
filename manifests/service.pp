@@ -48,7 +48,8 @@ class marsnat::service  (
   exec { 'start mars':
     cwd     => '/opt/mars',
     command => "/bin/bash -c ${djangoserver}",
-    unless  => '/usr/bin/pgrep -f "manage.py runserver"',
+    #!unless  => '/usr/bin/pgrep -f "manage.py runserver"',
+    refreshonly => true,
     user    => 'devops',
     subscribe => [
       Vcsrepo['/opt/mars'], 
