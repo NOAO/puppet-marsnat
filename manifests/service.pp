@@ -109,6 +109,14 @@ class marsnat::service  (
     enable  => true,
     require => Package['xinetd'],
     }
+  exec { 'supervisord':
+    command   => '/bin/systemctl enable supervisord',
+    creates   => '/etc/systemd/system/multi-user.target.wants/supervisord.service',
+  }
+  exec { 'start_supervisord':
+    command   => '/bin/systemctl start supervisord',
+    unless    => '/bin/systemctl status supervisord.service | grep "Active: active"',
+  }
   exec { 'bootrsyncd':
     command   => '/bin/systemctl enable rsyncd',
     creates   => '/etc/systemd/system/multi-user.target.wants/rsyncd.service',
