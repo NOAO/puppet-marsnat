@@ -61,10 +61,13 @@ class marsnat::service  (
     command => '/bin/bash -c supervisorctl restart gunicorn',
     refreshonly => true,
     }
-
+  exec { 'nginx':
+    command   => '/bin/systemctl enable nginx',
+    creates   => '/etc/systemd/system/multi-user.target.wants/nginx.service',
+  }
   exec { 'start nginx':
-    command => '/bin/bash -c supervisord -c /etc/supervisord.conf',
-    unless => ['/usr/bin/test -f /run/supervisord.pid'],
+    command => '/bin/systemctl start nginx',
+    unless => ['/usr/bin/test -f /run/nginx.pid'],
   }
 
 
