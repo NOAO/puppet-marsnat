@@ -2,7 +2,7 @@ class marsnat::install (
   $marsnatversion = lookup('marsnatversion'),
   $dqnatversion = lookup('dqnatversion'),
   $personalityversion = lookup('personalityversion'),
-  $archive_topdir  = lookup('archive_topdir'),
+  #$archive_topdir  = lookup('archive_topdir'),
   $localnatica = lookup('localnatica', {
     'default_value' => 'puppet:///modules/dmo_hiera/django_settings_local_natica.py' }),
 
@@ -29,7 +29,7 @@ class marsnat::install (
       dqnatversion       = ${dqnatversion}
       personalityversion = ${personalityversion}
 
-      archive_topdir     = ${archive_topdir}
+      #archive_topdir     = ${archive_topdir}
       localnatica        = ${localnatica}
     | EOT
   }
@@ -188,7 +188,7 @@ class marsnat::install (
     content => "---
 # For NATICA from hiera
 marsnatversion: '${marsnatversion}'
-archive_topdir: '${archive_topdir}'
+#archive_topdir: '${archive_topdir}'
 redis_port: '${redis_port}'
 ",
     group   => 'root',
