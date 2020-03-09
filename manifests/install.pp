@@ -284,13 +284,13 @@ redis_port: '${redis_port}'
     source  => '/opt/mars/marssite/dal/search-schema.json' ,
   }
   file { '/etc/logrotate.d/mars':
-    ensure  => 'present',
+    ensure  => 'file',
     replace => "${marsnat_replace}",
     source  => 'puppet:///modules/marsnat/mars.logrotate',
   }
   
   file { '/etc/ssl/certs/domain.crt' :
-    ensure  => 'present',      
+    ensure  => 'file',      
     replace => true,
     source  => "${ssl_domain_crt}",
     }
