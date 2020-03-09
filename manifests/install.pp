@@ -45,13 +45,6 @@ class marsnat::install (
   group { 'tada':
     ensure => 'present',
   } -> 
-  user { 'tada' :
-    ensure     => 'present',
-    comment    => 'For dropbox handling',
-    managehome => true,
-    password   => '$1$Pk1b6yel$tPE2h9vxYE248CoGKfhR41',  # tada"Password"
-    system     => true,
-    } ->
   user { 'devops' :
     ensure     => 'present',
     comment    => 'For python virtualenv and running mars.',
@@ -62,7 +55,13 @@ class marsnat::install (
     uid        => 661,
     groups     => ['tada','cache'],
   } ->
-
+  user { 'tada' :
+    ensure     => 'present',
+    comment    => 'For dropbox handling',
+    managehome => true,
+    password   => '$1$Pk1b6yel$tPE2h9vxYE248CoGKfhR41',  # tada"Password"
+    system     => true,
+    } ->
   user { 'tester' :
     ensure     => 'present',
     comment    => 'For testing NATICA.',
