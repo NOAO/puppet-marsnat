@@ -7,7 +7,4 @@
     su devops devops
 }
 
-/var/log/nginx/*.log {
-    su devops devops
-}
 

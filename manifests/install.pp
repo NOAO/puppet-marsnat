@@ -288,7 +288,11 @@ redis_port: '${redis_port}'
     replace => "${marsnat_replace}",
     source  => 'puppet:///modules/marsnat/mars.logrotate',
   }
-  
+  file { '/etc/logrotate.d/nginx':
+    ensure  => 'file',
+    replace => "${marsnat_replace}",
+    source  => 'puppet:///modules/marsnat/nginx.logrotate',
+  }
   file { '/etc/ssl/certs/domain.crt' :
     ensure  => 'file',      
     replace => true,
