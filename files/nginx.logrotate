@@ -1,0 +1,13 @@
+/var/log/nginx/*log {
+    su devops devops
+    create 0664 devops devops
+    daily
+    rotate 10
+    missingok
+    notifempty
+    compress
+    sharedscripts
+    postrotate
+        /bin/kill -USR1 `cat /run/nginx.pid 2>/dev/null` 2>/dev/null || true
+    endscript
+}
