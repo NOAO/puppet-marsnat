@@ -52,7 +52,7 @@ class marsnat::install (
     # tadapassword/xxxx_||.x.
     password   => '$1$Pk1b6yel$tPE2h9vxYE248CoGKfhR41',  
     system     => true,
-    uid        => 661,
+    #uid        => 661,  # already taken on marsnat1.pat, causes failures
     groups     => ['tada','cache'],
   } ->
   user { 'tada' :
