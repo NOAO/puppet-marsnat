@@ -304,6 +304,45 @@ redis_port: '${redis_port}'
     source  => "${ssl_domain_key}",
     }
 
+  file{ ['/opt/es_logging']:
+    ensure => 'directory',
+    owner  => 'devops',
+    group  => 'devops',
+    mode   => 'g=rwx',
+  }
+  file { '/opt/es_logging/download.sh':
+    ensure  => 'file',
+    replace => "${marsnat_replace}",
+    source  => 'puppet:///modules/marsnat/elasticsearch_logging/download.sh',
+  }
+  file { '/opt/es_logging/setup.sh':
+    ensure  => 'file',
+    replace => "${marsnat_replace}",
+    source  => 'puppet:///modules/marsnat/elasticsearch_logging/setup.sh',
+  }
+  file { '/opt/es_logging/filebeat.yml':
+    ensure  => 'file',
+    replace => "${marsnat_replace}",
+    source  => 'puppet:///modules/marsnat/elasticsearch_logging/filebeat.yml',
+  }
+  file { '/opt/es_logging/metricbeat.yml':
+    ensure  => 'file',
+    replace => "${marsnat_replace}",
+    source  => 'puppet:///modules/marsnat/elasticsearch_logging/metricbeat.yml',
+  }
+  exec { 'download_es_logging':
+    cwd     => '/opt/es_logging',
+    command => "/bin/bash -c  /opt/es_logging/download.sh",
+    refreshonly  => true,
+    logoutput    => true,
+    notify  => Exec['setup_es_logging']
+  }
+  exec {'setup_es_logging':
+    cwd => '/opt/es_logging',
+    command => "/bin/bash -c /opt/es_logging/setup.sh",
+    refreshonly => true
+  }
+
   file { [ '/etc/nginx', '/etc/nginx/sites-enabled']:
     ensure => 'directory',
     mode   => '0777',
