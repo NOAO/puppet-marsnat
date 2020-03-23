@@ -2,6 +2,7 @@ class marsnat::install (
   $marsnatversion = lookup('marsnatversion'),
   $dqnatversion = lookup('dqnatversion'),
   $personalityversion = lookup('personalityversion'),
+  $elasticsearch_host = lookup('elasticsearch_host'),
   #$archive_topdir  = lookup('archive_topdir'),
   $localnatica = lookup('localnatica', {
     'default_value' => 'puppet:///modules/dmo_hiera/django_settings_local_natica.py' }),
@@ -122,7 +123,7 @@ class marsnat::install (
     group  => 'devops',
     mode   => 'g=rwx',
     }
-  
+
   class { '::redis':
     protected_mode => 'no',
     #! bind => undef,  # Will cause DEFAULT (127.0.0.1) value to be used
@@ -304,21 +305,12 @@ redis_port: '${redis_port}'
     source  => "${ssl_domain_key}",
     }
 
+  # Elasticsearch logging
   file{ ['/opt/es_logging']:
     ensure => 'directory',
     owner  => 'devops',
     group  => 'devops',
     mode   => 'g=rwx',
-  }
-  file { '/opt/es_logging/download.sh':
-    ensure  => 'file',
-    replace => "${marsnat_replace}",
-    source  => 'puppet:///modules/marsnat/elasticsearch_logging/download.sh',
-  }
-  file { '/opt/es_logging/setup.sh':
-    ensure  => 'file',
-    replace => "${marsnat_replace}",
-    source  => 'puppet:///modules/marsnat/elasticsearch_logging/setup.sh',
   }
   file { '/opt/es_logging/filebeat.yml':
     ensure  => 'file',
@@ -330,16 +322,14 @@ redis_port: '${redis_port}'
     replace => "${marsnat_replace}",
     source  => 'puppet:///modules/marsnat/elasticsearch_logging/metricbeat.yml',
   }
-  exec { 'download_es_logging':
-    cwd     => '/opt/es_logging',
-    command => "/bin/bash -c  /opt/es_logging/download.sh",
-    refreshonly  => true,
-    logoutput    => true,
-    notify  => Exec['setup_es_logging']
+  file { '/opt/es_logging/setup.sh':
+    ensure  => 'file',
+    replace => "${marsnat_replace}",
+    source  => 'puppet:///modules/marsnat/elasticsearch_logging/setup.sh ',
   }
   exec {'setup_es_logging':
     cwd => '/opt/es_logging',
-    command => "/bin/bash -c /opt/es_logging/setup.sh",
+    command => "/bin/bash -c /opt/es_logging/setup.sh ${elasticsearch_host}",
     refreshonly => true
   }
 
