@@ -325,6 +325,7 @@ redis_port: '${redis_port}'
   file { '/opt/es_logging/setup.sh':
     ensure  => 'file',
     replace => "${marsnat_replace}",
+    mode    => 'og=rwx',
     source  => 'puppet:///modules/marsnat/elasticsearch_logging/setup.sh ',
   }
   exec {'setup_es_logging':
