@@ -330,7 +330,7 @@ redis_port: '${redis_port}'
   }
   exec {'setup_es_logging':
     cwd => '/opt/es_logging',
-    command => "/bin/bash -c /opt/es_logging/setup.sh ${elasticsearch_host}",
+    command => "/bin/bash -c cd /opt/es_logging; ./setup.sh ${elasticsearch_host}",
     refreshonly => true
   }
 

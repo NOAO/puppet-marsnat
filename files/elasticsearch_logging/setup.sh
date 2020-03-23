@@ -16,8 +16,8 @@ rpm -vi metricbeat-7.1.0-x86_64.rpm
 
 # copy the config into place
 # replace the string with url
-sed -e "s/$replace/$elastic_url/ig" filebeat.yml > /etc/filebeat/filebeat.yml
-sed -e "s/$replace/$elastic_url/ig" metricbeat.yml > /etc/metricbeat/metricbeat.yml
+sed -e "s;$replace;$elastic_url;ig" filebeat.yml > /etc/filebeat/filebeat.yml
+sed -e "s;$replace;$elastic_url;ig" metricbeat.yml > /etc/metricbeat/metricbeat.yml
 
 filebeat modules enable nginx
 filebeat modules enable system
