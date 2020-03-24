@@ -331,8 +331,9 @@ redis_port: '${redis_port}'
   }
   exec {'setup_es_logging':
     cwd => '/opt/es_logging',
-    command => "/bin/bash -c cd /opt/es_logging; ./setup.sh ${elasticsearch_host}",
-    refreshonly => true
+    command => "/bin/bash -c ./setup.sh ${elasticsearch_host}",
+    refreshonly => true,
+    logoutput   => true,
   }
 
   file { [ '/etc/nginx', '/etc/nginx/sites-enabled']:
