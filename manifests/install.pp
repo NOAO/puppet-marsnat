@@ -29,6 +29,7 @@ class marsnat::install (
       marsnatversion     = ${marsnatversion}
       dqnatversion       = ${dqnatversion}
       personalityversion = ${personalityversion}
+      elasticsearch_host = ${elasticsearch_host}
 
       #archive_topdir     = ${archive_topdir}
       localnatica        = ${localnatica}
@@ -331,7 +332,7 @@ redis_port: '${redis_port}'
   }
   exec {'setup_es_logging':
     cwd => '/opt/es_logging',
-    command => "/bin/bash -c ./setup.sh ${elasticsearch_host}",
+    command => "/bin/bash -c './setup.sh ${elasticsearch_host}'",
     refreshonly => true,
     logoutput   => true,
   }
