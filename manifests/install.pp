@@ -2,7 +2,7 @@ class marsnat::install (
   $marsnatversion = lookup('marsnatversion'),
   $dqnatversion = lookup('dqnatversion'),
   $personalityversion = lookup('personalityversion'),
-  #$archive_topdir  = lookup('archive_topdir'),
+  $archive_topdir  = lookup('archive_topdir'),
   $localnatica = lookup('localnatica', {
     'default_value' => 'puppet:///modules/dmo_hiera/django_settings_local_natica.py' }),
 
