@@ -3,6 +3,7 @@ class marsnat::install (
   $dqnatversion = lookup('dqnatversion'),
   $personalityversion = lookup('personalityversion'),
   $archive_topdir  = lookup('archive_topdir'),
+  $elasticsearch_host = lookup('elasticsearch_host'),
   $localnatica = lookup('localnatica', {
     'default_value' => 'puppet:///modules/dmo_hiera/django_settings_local_natica.py' }),
 
@@ -28,6 +29,7 @@ class marsnat::install (
       marsnatversion     = ${marsnatversion}
       dqnatversion       = ${dqnatversion}
       personalityversion = ${personalityversion}
+      elasticsearch_host = ${elasticsearch_host}
 
       #archive_topdir     = ${archive_topdir}
       localnatica        = ${localnatica}
@@ -122,7 +124,7 @@ class marsnat::install (
     group  => 'devops',
     mode   => 'g=rwx',
     }
-  
+
   class { '::redis':
     protected_mode => 'no',
     #! bind => undef,  # Will cause DEFAULT (127.0.0.1) value to be used
@@ -303,6 +305,37 @@ redis_port: '${redis_port}'
     replace => true,
     source  => "${ssl_domain_key}",
     }
+
+  # Elasticsearch logging
+  file{ ['/opt/es_logging']:
+    ensure => 'directory',
+    owner  => 'devops',
+    group  => 'devops',
+    mode   => 'g=rwx',
+  }
+  file { '/opt/es_logging/filebeat.yml':
+    ensure  => 'file',
+    replace => "${marsnat_replace}",
+    source  => 'puppet:///modules/marsnat/elasticsearch_logging/filebeat.yml',
+  }
+  file { '/opt/es_logging/metricbeat.yml':
+    ensure  => 'file',
+    replace => "${marsnat_replace}",
+    source  => 'puppet:///modules/marsnat/elasticsearch_logging/metricbeat.yml',
+  }
+  file { '/opt/es_logging/setup.sh':
+    ensure  => 'file',
+    replace => "${marsnat_replace}",
+    mode    => 'og=rwx',
+    source  => 'puppet:///modules/marsnat/elasticsearch_logging/setup.sh',
+    notify   => Exec['setup_es_logging'],
+  }
+  exec {'setup_es_logging':
+    cwd => '/opt/es_logging',
+    command => "/bin/bash -c './setup.sh ${elasticsearch_host}'",
+    refreshonly => true,
+    logoutput   => true,
+  }
 
   file { [ '/etc/nginx', '/etc/nginx/sites-enabled']:
     ensure => 'directory',
