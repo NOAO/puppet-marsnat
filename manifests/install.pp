@@ -31,7 +31,7 @@ class marsnat::install (
       personalityversion = ${personalityversion}
       elasticsearch_host = ${elasticsearch_host}
 
-      #archive_topdir     = ${archive_topdir}
+      archive_topdir     = ${archive_topdir}
       localnatica        = ${localnatica}
     | EOT
   }
