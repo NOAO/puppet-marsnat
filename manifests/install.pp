@@ -118,7 +118,7 @@ class marsnat::install (
       #Python::Requirements['/opt/dqnat/requirements.txt'],
     ],
   }
-  file { ['/var/lib/nginx/tmp' , '/var/lib/nginx/tmp/client_body', '/var/log/nginx' ] :
+  file { ['/var/lib/nginx', '/var/lib/nginx/tmp' , '/var/lib/nginx/tmp/client_body', '/var/log/nginx' ] :
     ensure => 'directory',
     owner  => 'nginx',
     group  => 'devops',
