@@ -75,7 +75,7 @@ class marsnat::service  (
   }
   file { '/usr/lib/systemd/system/filebeat.service':
     ensure  => 'file',
-    replace => "${marsnat_replace}",
+    replace => "true",
     source  => 'puppet:///modules/marsnat/elasticsearch_logging/filebeat.service',
   }
   exec { 'start filebeat':
@@ -87,7 +87,7 @@ class marsnat::service  (
   }
   file { '/usr/lib/systemd/system/metricbeat.service':
     ensure  => 'file',
-    replace => "${marsnat_replace}",
+    replace => "true",
     source  => 'puppet:///modules/marsnat/elasticsearch_logging/metricbeat.service',
   }
   exec { 'start metricbeat':
