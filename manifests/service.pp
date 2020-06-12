@@ -58,7 +58,7 @@ class marsnat::service  (
       ],
   } ->
   exec { 'bounce gunicorn':
-    command => '/bin/bash -c supervisorctl restart gunicorn',
+    command => '/bin/bash -c "supervisorctl restart gunicorn"',
     refreshonly => true,
     }
   exec { 'nginx':
