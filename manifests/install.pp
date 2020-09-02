@@ -118,6 +118,21 @@ class marsnat::install (
       #Python::Requirements['/opt/dqnat/requirements.txt'],
     ],
   }
+  file { '/opt/pandoc_install.sh' :
+    ensure  => 'file',
+    mode    => 'ug=rwx',
+    owner        => 'devops',
+    group        => 'devops',
+    replace => "${marsnat_replace}",
+    source  => 'puppet:///modules/marsnat/pandoc_install.sh',
+    notify   => Exec['install pandoc'],
+  }
+  exec { 'install pandoc':
+    cwd     => '/opt/',
+    command => "/bin/bash -c  /opt/pandoc_install.sh",
+    refreshonly  => true,
+    logoutput    => true
+  }
   file { ['/var/lib/nginx', '/var/lib/nginx/tmp' , '/var/lib/nginx/tmp/client_body', '/var/log/nginx' ] :
     ensure => 'directory',
     owner  => 'nginx',

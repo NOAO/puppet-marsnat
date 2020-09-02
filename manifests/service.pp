@@ -58,7 +58,7 @@ class marsnat::service  (
       ],
   } ->
   exec { 'bounce gunicorn':
-    command => '/bin/bash -c supervisorctl restart gunicorn',
+    command => '/bin/bash -c "supervisorctl restart gunicorn"',
     refreshonly => true,
     }
   exec { 'nginx':
@@ -73,12 +73,22 @@ class marsnat::service  (
     command   => '/bin/systemctl enable filebeat',
     creates   => '/etc/systemd/system/multi-user.target.wants/filebeat.service',
   }
+  file { '/usr/lib/systemd/system/filebeat.service':
+    ensure  => 'file',
+    replace => "true",
+    source  => 'puppet:///modules/marsnat/elasticsearch_logging/filebeat.service',
+  }
   exec { 'start filebeat':
     command => '/bin/systemctl start filebeat',
   }
   exec { 'metricbeat':
     command   => '/bin/systemctl enable metricbeat',
     creates   => '/etc/systemd/system/multi-user.target.wants/metricbeat.service',
+  }
+  file { '/usr/lib/systemd/system/metricbeat.service':
+    ensure  => 'file',
+    replace => "true",
+    source  => 'puppet:///modules/marsnat/elasticsearch_logging/metricbeat.service',
   }
   exec { 'start metricbeat':
     command => '/bin/systemctl start metricbeat',
