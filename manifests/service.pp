@@ -69,30 +69,6 @@ class marsnat::service  (
     command => '/bin/systemctl start nginx',
     unless => ['/usr/bin/test -f /run/nginx.pid'],
   }
-  exec { 'filebeat':
-    command   => '/bin/systemctl enable filebeat',
-    creates   => '/etc/systemd/system/multi-user.target.wants/filebeat.service',
-  }
-  file { '/usr/lib/systemd/system/filebeat.service':
-    ensure  => 'file',
-    replace => "true",
-    source  => 'puppet:///modules/marsnat/elasticsearch_logging/filebeat.service',
-  }
-  exec { 'start filebeat':
-    command => '/bin/systemctl start filebeat',
-  }
-  exec { 'metricbeat':
-    command   => '/bin/systemctl enable metricbeat',
-    creates   => '/etc/systemd/system/multi-user.target.wants/metricbeat.service',
-  }
-  file { '/usr/lib/systemd/system/metricbeat.service':
-    ensure  => 'file',
-    replace => "true",
-    source  => 'puppet:///modules/marsnat/elasticsearch_logging/metricbeat.service',
-  }
-  exec { 'start metricbeat':
-    command => '/bin/systemctl start metricbeat',
-  }
   # For exec, use something like:
     #   unless  => '/usr/bin/pgrep -f "manage.py runserver"',
     # to prevent running duplicate.  Puppet is supposed to check process table
