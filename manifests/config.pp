@@ -49,6 +49,16 @@ class marsnat::config (
     group  => 'devops',
     mode   => '0774',
   }
+  file { ['/srv/ftp',
+          '/srv/ftp/protected',
+          '/srv/ftp/public',
+          '/srv/ftp/protected/staging',
+          '/srv/ftp/public/staging']:
+    ensure => 'directory',
+    owner  => 'devops',
+    group  => 'devops',
+    mode   => '0774',
+  }
   file { ['/var/tada/data/cache',
           '/var/tada/data/anticache',
           '/var/tada/data/dropbox',
