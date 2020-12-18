@@ -320,6 +320,16 @@ redis_port: '${redis_port}'
     replace => true,
     source  => "${ssl_domain_key}",
     }
+  file { '/etc/ssl/certs/__noirlab_edu.crt' :
+    ensure  => 'file',
+    replace => true,
+    source  => "${ssl_noirlab_crt}",
+    }
+  file { '/etc/ssl/certs/star-noirlab-edu.key' :
+    ensure  => 'present',
+    replace => true,
+    source  => "${ssl_noirlab_key}",
+    }
 
   file { [ '/etc/nginx', '/etc/nginx/sites-enabled']:
     ensure => 'directory',
