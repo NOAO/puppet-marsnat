@@ -330,6 +330,11 @@ redis_port: '${redis_port}'
     replace => true,
     source  => 'puppet:///modules/marsnat/nginx/sites-enabled/default',
     } 
+  file { '/etc/nginx/sites-enabled/noirlab' :
+    ensure  => 'present',
+    replace => true,
+    source  => 'puppet:///modules/marsnat/nginx/sites-enabled/noirlab',
+    }
   file { '/etc/nginx/nginx.conf' :
     ensure  => 'present',      
     replace => true,
