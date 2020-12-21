@@ -321,7 +321,7 @@ redis_port: '${redis_port}'
     source  => "${ssl_domain_key}",
     }
   file { '/etc/ssl/certs/__noirlab_edu.crt' :
-    ensure  => 'file',
+    ensure  => 'present',
     replace => true,
     source  => "${ssl_noirlab_crt}",
     }
