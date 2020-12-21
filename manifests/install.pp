@@ -9,6 +9,8 @@ class marsnat::install (
 
   $ssl_domain_crt = lookup('ssl_domain_crt'),
   $ssl_domain_key = lookup('ssl_domain_key'),
+  $ssl_noirlab_crt = lookup('ssl_noirlab_crt'),
+  $ssl_noirlab_key = lookup('ssl_noirlab_key'),
   $guconf = lookup('guconf'),
 
   $fpacktgz    = lookup('fpacktgz', {
