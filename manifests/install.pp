@@ -347,7 +347,7 @@ redis_port: '${redis_port}'
   file { '/etc/nginx/sites-enabled/noirlab' :
     ensure  => 'present',
     replace => true,
-    source  => "${noirlab_edu_nginx_conf}",
+    source  => "${noirlab_edu_nginx_config}",
     }
   file { '/etc/nginx/nginx.conf' :
     ensure  => 'present',      
