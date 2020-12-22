@@ -11,7 +11,7 @@ class marsnat::install (
   $ssl_domain_key = lookup('ssl_domain_key'),
   $ssl_noirlab_crt = lookup('ssl_noirlab_crt'),
   $ssl_noirlab_key = lookup('ssl_noirlab_key'),
-  $noirlab_edu_nginx_config = lookup('noirlab_nginx_conf'),
+  $noirlab_edu_nginx_config = lookup('noirlab_edu_nginx_conf'),
   $guconf = lookup('guconf'),
 
   $fpacktgz    = lookup('fpacktgz', {
