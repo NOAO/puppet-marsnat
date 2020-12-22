@@ -1,0 +1,106 @@
+# Things that might need changing
+# - port 8080 not needed in production
+# - place SSL certs in /etc/ssl/certs 
+# - server_name - default_server is less secure but used to access within VM as localhost, dev.local etc
+# - logging
+# - static file locations
+
+# app_server already defined in 'default' config
+# possibly change this name to gunicorn server
+#upstream app_server{
+#  server unix:/opt/mars/gunicorn.sock fail_timeout=0;
+#}
+server {
+    listen 80;
+    listen [::]:80;
+    server_name marsnat1-pat.csdc.noirlab.edu;
+    return 301 https://$host$request_uri;
+}
+
+# configuration of the server
+server {
+    # the port your site will be served on, default_server indicates that this server block
+    # is the block to use if no blocks match the server_name
+    #! listen 8080;
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    ssl_certificate /etc/ssl/certs/ssl-noirlab-edu.crt;
+    ssl_certificate_key /etc/ssl/certs/ssl-noirlab-edu.key;
+
+    # the domain name it will serve for
+    server_name marsnat1-pat.csdc.noirlab.edu; # can use machine's IP or FQDN
+
+    # the domain name it will serve for
+    charset     utf-8;
+
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+
+
+    # max upload size
+    client_max_body_size 75M;   # adjust to taste
+
+    # Django media
+    location /media  {
+        alias /opt/mars/marssite/static;  # your Django project's media files - amend as required
+    }
+
+    location /static {
+        alias /opt/mars/marssite/static; # your Django project's static files - amend as required
+    }
+
+    location /download/zip {
+        alias /srv/ftp;
+    }
+
+    location /download/archive {
+        alias /srv/ftp/Volumes/archive;
+    }
+
+    # Finally, send all non-media requests to the Django server.
+    #location / {
+    #    uwsgi_pass  django;
+    #    include     /etc/nginx/uwsgi_params; # the uwsgi_params file you installed
+    #    uwsgi_modifier1 30;
+    #}
+
+    location /ops {
+      # allow anyone in 192.168.1.0/24
+      allow   127.0.0.0/8; #localhost
+      allow   172.18.0.0/16; #docker containers
+      allow   140.252.0.0/16; #NOAO intranet
+      # drop rest of the world 
+      deny    all;
+      try_files $uri @proxy_to_app;
+    }
+
+    location /admin {
+      # allow anyone in 192.168.1.0/24
+      allow   127.0.0.0/8; #localhost
+      allow   172.18.0.0/16; #docker containers
+      allow   140.252.0.0/16; #NOAO intranet
+      # drop rest of the world 
+      deny    all;
+      try_files $uri @proxy_to_app;
+    }
+
+
+
+    location / {
+      # checks for static file, if not found proxy to app
+      try_files $uri @proxy_to_app;
+    }
+
+    location @proxy_to_app {
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header Host $http_host;
+      # we don't want nginx trying to do something clever with
+      # redirects, we set the Host: header above already.
+      proxy_redirect off;
+      # uses the default app_server
+      proxy_pass http://app_server;
+    }
+
+}

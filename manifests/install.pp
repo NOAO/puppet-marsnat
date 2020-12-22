@@ -11,6 +11,7 @@ class marsnat::install (
   $ssl_domain_key = lookup('ssl_domain_key'),
   $ssl_noirlab_crt = lookup('ssl_noirlab_crt'),
   $ssl_noirlab_key = lookup('ssl_noirlab_key'),
+  $noirlab_edu_nginx_config = lookup('noirlab_nginx_conf'),
   $guconf = lookup('guconf'),
 
   $fpacktgz    = lookup('fpacktgz', {
@@ -322,12 +323,12 @@ redis_port: '${redis_port}'
     replace => true,
     source  => "${ssl_domain_key}",
     }
-  file { '/etc/ssl/certs/__noirlab_edu.crt' :
+  file { '/etc/ssl/certs/ssl-noirlab-edu.crt' :
     ensure  => 'present',
     replace => true,
     source  => "${ssl_noirlab_crt}",
     }
-  file { '/etc/ssl/certs/star-noirlab-edu.key' :
+  file { '/etc/ssl/certs/ssl-noirlab-edu.key' :
     ensure  => 'present',
     replace => true,
     source  => "${ssl_noirlab_key}",
@@ -345,7 +346,7 @@ redis_port: '${redis_port}'
   file { '/etc/nginx/sites-enabled/noirlab' :
     ensure  => 'present',
     replace => true,
-    source  => 'puppet:///modules/marsnat/nginx/sites-enabled/noirlab',
+    source  => '${noirlab_edu_nginx_conf}',
     }
   file { '/etc/nginx/nginx.conf' :
     ensure  => 'present',      
