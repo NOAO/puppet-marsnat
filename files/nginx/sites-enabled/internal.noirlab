@@ -13,7 +13,7 @@
 server {
     listen 80;
     listen [::]:80;
-    server_name marsnat1-pat.csdc.noirlab.edu;
+    server_name *.csdc.noirlab.edu;
     return 301 https://$host$request_uri;
 }
 
@@ -29,7 +29,7 @@ server {
     ssl_certificate_key /etc/ssl/certs/ssl-noirlab-edu.key;
 
     # the domain name it will serve for
-    server_name marsnat1-pat.csdc.noirlab.edu; # can use machine's IP or FQDN
+    server_name *.csdc.noirlab.edu; # can use machine's IP or FQDN
 
     # the domain name it will serve for
     charset     utf-8;
