@@ -60,6 +60,9 @@ class marsnat::service  (
   exec { 'bounce gunicorn':
     command => '/bin/bash -c "supervisorctl restart gunicorn"',
     refreshonly => true,
+    subscribe => [
+      Vcsrepo['/opt/mars']
+    ]
     }
   exec { 'nginx':
     command   => '/bin/systemctl enable nginx',
