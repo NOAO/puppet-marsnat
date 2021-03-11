@@ -63,7 +63,7 @@ class marsnat::service  (
     subscribe => [
       Vcsrepo['/opt/mars']
     ]
-    }
+  }
   exec { 'nginx':
     command   => '/bin/systemctl enable nginx',
     creates   => '/etc/systemd/system/multi-user.target.wants/nginx.service',

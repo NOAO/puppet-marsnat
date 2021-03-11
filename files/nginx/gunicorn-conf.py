@@ -1,6 +1,6 @@
 import os
 os.environ['ES_INDEX'] = 'portal'
-workers = 4
+workers = 16
 bind = 'unix:/opt/mars/gunicorn.sock'
 daemon = False
 disable_redirect_access_to_syslog = True
