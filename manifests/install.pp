@@ -375,6 +375,7 @@ redis_port: '${redis_port}'
   }
   file { '/etc/gunicorn-conf.py' :
     ensure  => 'file',
+    replace => true,
     source  => "${guconf}" #'puppet:///modules/marsnat/nginx/gunicorn-conf.py',
   }
   # BOUNCE: supervisorctl restart nginx
