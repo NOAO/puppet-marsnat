@@ -88,6 +88,7 @@ server {
 
     location / {
       # checks for static file, if not found proxy to app
+      expires 2d;
       try_files $uri @proxy_to_app;
     }
 
