@@ -7,5 +7,4 @@ disable_redirect_access_to_syslog = True
 access_logfile = '/var/log/gunicorn_access.log'
 error_logfile = '/var/log/gunicorn_error.log'
 log_level = 'info'
-timeout = 600
-
+timeout = 1200
