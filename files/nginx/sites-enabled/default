@@ -11,7 +11,7 @@ upstream app_server {
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    server_name _;
+    server_name astroarchive.noao.edu;
     return 301 https://$host$request_uri;
 }
 
@@ -27,7 +27,7 @@ server {
     ssl_certificate_key /etc/ssl/certs/domain.key;
 
     # the domain name it will serve for
-    server_name default_server # can use machine's IP or FQDN
+    server_name astroarchive.noao.edu; # can use machine's IP or FQDN
 
     # the domain name it will serve for
     #server_name .dm.noao.edu; # substitute your machine's IP address or FQDN
