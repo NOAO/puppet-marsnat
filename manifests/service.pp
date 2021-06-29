@@ -9,7 +9,7 @@ class marsnat::service  (
     | EOT
   }
 
-  #./manage.py collectstatic --noinput 
+  #./manage.py collectstatic --noinput
   exec { 'collect static':
     command => "/bin/bash -c 'source /opt/mars/venv/bin/activate; /opt/mars/marssite/manage.py collectstatic --noinput'",
     #creates => '/opt/mars/marssite/audit/static/audit/screen.css',
@@ -21,7 +21,7 @@ class marsnat::service  (
       File['/opt/mars/venv'],
       Python::Requirements['/opt/mars/requirements.txt'],
       ],
-    } 
+    }
   #!class { 'firewall': } ->
   #!firewall { 'disable firewall':
   #!  ensure => 'stopped',
@@ -52,8 +52,10 @@ class marsnat::service  (
     refreshonly => true,
     user    => 'devops',
     subscribe => [
-      Vcsrepo['/opt/mars'], 
-      File['/opt/mars/venv', '/etc/mars/hiera_settings.yaml'],
+      Vcsrepo['/opt/mars'],
+      File['/opt/mars/venv',
+           '/etc/mars/hiera_settings.yaml',
+          '/etc/mars/django_override_settings.py'],
       Python::Requirements['/opt/mars/requirements.txt'],
       ],
   } ->
@@ -104,7 +106,7 @@ class marsnat::service  (
     provider  => 'redhat',
     path      => '/etc/init.d',
   }
-  
+
   service { 'xinetd':
     ensure  => 'running',
     enable  => true,
@@ -129,4 +131,3 @@ class marsnat::service  (
   }
 
 }
-
