@@ -45,7 +45,10 @@ class marsnat::service  (
 #!    creates => "/etc/patch.log",
 #!    } ->
 
-  exec { 'start mars':
+ file { '/etc/mars/django_override_settings.py' :
+   ensure  => 'present',
+ } ->
+ exec { 'start mars':
     cwd     => '/opt/mars',
     command => "/bin/bash -c ${djangoserver}",
     #!unless  => '/usr/bin/pgrep -f "manage.py runserver"',
@@ -55,7 +58,7 @@ class marsnat::service  (
       Vcsrepo['/opt/mars'],
       File['/opt/mars/venv',
            '/etc/mars/hiera_settings.yaml',
-          '/etc/mars/django_override_settings.py'],
+           '/etc/mars/django_override_settings.py'],
       Python::Requirements['/opt/mars/requirements.txt'],
       ],
   } ->
