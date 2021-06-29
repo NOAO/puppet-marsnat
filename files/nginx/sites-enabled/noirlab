@@ -44,11 +44,14 @@ server {
 
     # Django media
     location /media  {
-        alias /opt/mars/marssite/static;  # your Django project's media files - amend as required
+        alias /opt/mars/marssite/static/;  # your Django project's media files - amend as required
     }
 
     location /static {
-        alias /opt/mars/marssite/static; # your Django project's static files - amend as required
+        expires 10d;
+        sendfile on;
+        sendfile_max_chunk 1m;
+        alias /opt/mars/marssite/static/; # your Django project's static files - amend as required
     }
 
     location /download/zip {

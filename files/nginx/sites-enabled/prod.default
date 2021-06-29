@@ -9,10 +9,10 @@ upstream app_server {
   server unix:/opt/mars/gunicorn.sock fail_timeout=0;
 }
 server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    server_name _;
-    return 301 https://$host$request_uri;
+    listen 80;
+    listen [::]:80;
+    server_name astroarchive.noao.edu;
+    return 301 https://astroarchive.noirlab.edu; #https://$host$request_uri;
 }
 
 # configuration of the server
@@ -37,6 +37,8 @@ server {
     #server_name .dm.noao.edu; # substitute your machine's IP address or FQDN
     charset     utf-8;
 
+    # Redirect
+    return 301 https://astroarchive.noirlab.edu;
     
     # max upload size
     client_max_body_size 75M;   # adjust to taste
